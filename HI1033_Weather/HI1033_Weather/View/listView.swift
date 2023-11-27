@@ -8,30 +8,35 @@
 import SwiftUI
 
 struct listView: View {
+    @EnvironmentObject var VM: WeatherVM
     var body: some View {
-        VStack{
-            HStack{
-                Text("Weather Forecast")
-                    .foregroundColor(.white)
-                    .background(.blue)
-                    .padding()
-                    .frame(alignment: .leading)
-            }
-            Text("Approved time 2022-07-14")
+            VStack{
+                HStack{
+                    Text("Weather Forecast")
+                        .foregroundColor(.white)
+                        .background(.blue)
+                        .padding()
+                        .frame(alignment: .leading)
+                }
+                
+                Text(VM.time)
 
-            
-            ForEach (0..<7) { index in
-                rowView(icon: "☁️")
-            }
-            
+                
+                List {
+                    ForEach (0..<15) { index in
+                        rowView(icon: "☁️")
+                    }
+                }.listStyle(PlainListStyle())
+                
+                coordinatesView().environmentObject(WeatherVM())
+                
         }
-
     }
     
 }
 
 struct listView_Previews: PreviewProvider {
     static var previews: some View {
-        listView()
+        listView().environmentObject(WeatherVM())
     }
 }

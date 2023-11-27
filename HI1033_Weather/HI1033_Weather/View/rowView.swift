@@ -12,18 +12,16 @@ struct rowView: View {
     var body: some View {
         HStack{
             VStack(alignment: .leading){
-                Text("2000-07-14")
-                    .padding(.horizontal)
+                Text("2000-07-14 11:00")
+                    
                 HStack{
                     Text(icon)
                     Text("14 °C").font(.title2)
-                }.padding(.horizontal)
-            }.padding()
+                }
+            }
 
-            Spacer()
-        }
-        
             
+        }
     }
 }
 
