@@ -10,26 +10,21 @@ import SwiftUI
 struct listView: View {
     @EnvironmentObject var VM: WeatherVM
     var body: some View {
-            VStack{
-                HStack{
-                    Text("Weather Forecast")
-                        .foregroundColor(.white)
-                        .background(.blue)
-                        .padding()
-                        .frame(alignment: .leading)
+        VStack{
+            HStack{
+                Text("Weather Forecast")
+                    .foregroundColor(.white)
+                    .background(.blue)
+                    .padding()
+                    .frame(alignment: .leading)
+            }
+            Text("Approved time 2022-07-14")
+            List{
+                ForEach (0..<15) { index in
+                    rowView(timestamp: Date.now, icon: "☁️", temp: 18)
                 }
                 
-                Text(VM.time)
-
-                
-                List {
-                    ForEach (0..<15) { index in
-                        rowView(icon: "☁️")
-                    }
-                }.listStyle(PlainListStyle())
-                
-                coordinatesView().environmentObject(WeatherVM())
-                
+            }.listStyle(PlainListStyle())
         }
     }
     
