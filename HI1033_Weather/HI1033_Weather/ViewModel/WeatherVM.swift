@@ -23,8 +23,8 @@ class WeatherVM : ObservableObject {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         time = "Approved time \(dateFormatter.string(from: currentDate))"
+        theModel.getData()
     }
-    
     
     
     
