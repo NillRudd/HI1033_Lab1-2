@@ -25,6 +25,8 @@ struct listView: View {
                 }
                 
             }.listStyle(PlainListStyle())
+            
+            coordinatesView().environmentObject(WeatherVM())
         }
     }
     
