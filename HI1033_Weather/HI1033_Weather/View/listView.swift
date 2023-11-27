@@ -18,11 +18,14 @@ struct listView: View {
                     .frame(alignment: .leading)
             }
             Text("Approved time 2022-07-14")
-
+            List{
+                ForEach (0..<15) { index in
+                    rowView(timestamp: Date.now, icon: "☁️", temp: 18)
+                }
+                
+            }.listStyle(PlainListStyle())
             
-            ForEach (0..<7) { index in
-                rowView(icon: "☁️")
-            }
+
             
         }
 

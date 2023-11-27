@@ -14,8 +14,8 @@ struct coordinatesView: View {
     
     var body: some View {
         HStack{
-            TextField("latitude", text: $VM.latitude)
-            TextField("longitude", text: $VM.longitude))
+            TextField("latitude", value: $VM.latitude, format: .number)
+            TextField("longitude", value: $VM.longitude, format: .number)
             
         }.background(.gray)
     }
@@ -24,5 +24,6 @@ struct coordinatesView: View {
 struct coordinatesView_Previews: PreviewProvider {
     static var previews: some View {
         coordinatesView()
+            .environmentObject(WeatherVM())
     }
 }
