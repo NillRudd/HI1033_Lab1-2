@@ -32,7 +32,7 @@ struct WeatherApiData{
             } else if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
                     let welcome = try? JSONDecoder().decode(Welcome.self, from: data)
-                    print("Data recieved: \(dataString)")
+                    //print("Data recieved: \(dataString)")
                 }
             }
         }

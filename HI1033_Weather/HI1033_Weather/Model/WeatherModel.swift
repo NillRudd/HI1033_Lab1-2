@@ -30,7 +30,7 @@ struct WeatherModel {
                 print("error: \(error.localizedDescription)")
             } else if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
-                    print("Data recieved: \(dataString)")
+                    //print("Data recieved: \(dataString)")
                 }
             }
         }
