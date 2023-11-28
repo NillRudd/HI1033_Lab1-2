@@ -18,7 +18,6 @@ struct WeatherData: Codable {
     let utcOffsetSeconds: Int
     let timezone, timezoneAbbreviation: String
     let elevation: Int
-    let hourlyUnits: HourlyUnits
     let hourly: Hourly
 
     enum CodingKeys: String, CodingKey {
@@ -28,7 +27,6 @@ struct WeatherData: Codable {
         case timezone
         case timezoneAbbreviation = "timezone_abbreviation"
         case elevation
-        case hourlyUnits = "hourly_units"
         case hourly
     }
 }
@@ -46,14 +44,4 @@ struct Hourly: Codable {
     }
 }
 
-// MARK: - HourlyUnits
-struct HourlyUnits: Codable {
-    let time, temperature2M, weatherCode: String
-
-    enum CodingKeys: String, CodingKey {
-        case time
-        case temperature2M = "temperature_2m"
-        case weatherCode = "weather_code"
-    }
-}
 

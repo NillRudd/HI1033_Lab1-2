@@ -15,7 +15,7 @@ struct WeatherApiData{
     var db : OpaquePointer?
     var path : String = "myDb.sqlite"
     private var dbManager : DbManager
-
+    
     init(){
         theModel = WeatherModel()
         dbManager = DbManager();
@@ -34,8 +34,15 @@ struct WeatherApiData{
                 if let dataString = String(data: data, encoding: .utf8) {
                     if let weatherData = try? JSONDecoder().decode(WeatherData.self, from: data) {
                         dbManager.insertWeatherData(weatherData: weatherData)
-                        //print("Data received: \(dataString)")
-                        print(dbManager.getWeatherData())
+                        //print("Data received: \(weatherData)")
+                        let testing = dbManager.getWeatherData()
+                        /*
+                        for t in testing {
+                            printWeatherData(t)
+                        }
+                         */
+                        print(testing.count)
+                        
                     } else {
                         print("Failed to decode JSON into WeatherData")
                     }
@@ -47,41 +54,30 @@ struct WeatherApiData{
         session.finishTasksAndInvalidate()
     }
     
-    func storeDataInDb() {
-        
-        
-    }
-    
-    func getDataFromDb() {
-        
-    }
-    
-    func createDB() -> OpaquePointer? {
-        let filePath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathExtension(path)
-        
-        var db : OpaquePointer? = nil
-        
-        if sqlite3_open(filePath.path, &db) != SQLITE_OK {
-            print("There is error in creating db")
-            return nil
-        }else {
-            print("Database has been created with path\(path)")
-            return db
-        }
-    }
-    
-    func createTable() {
-        let query = "CREATE TABLE IF NOT EXIST wheaterData()"
-        var statement : OpaquePointer? = nil
-        
-        if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
-            if sqlite3_step(statement) == SQLITE_DONE {
-                print("table creation success")
-            } else {
-                print("table creation fail")
+    func printWeatherData(_ weatherData: WeatherData) {
+        print("Latitude: \(weatherData.latitude)")
+        print("Longitude: \(weatherData.longitude)")
+        print("Generation Time (ms): \(weatherData.generationtimeMS)")
+        print("UTC Offset Seconds: \(weatherData.utcOffsetSeconds)")
+        print("Timezone: \(weatherData.timezone)")
+        print("Timezone Abbreviation: \(weatherData.timezoneAbbreviation)")
+        print("Elevation: \(weatherData.elevation)")
+
+        // Print Hourly data
+        print("\nHourly Data:")
+        for (index, time) in weatherData.hourly.time.enumerated() {
+            print("  Time \(index + 1): \(time)")
+            
+            // Check bounds before accessing elements in temperature2M and weatherCode arrays
+            if index < weatherData.hourly.temperature2M.count {
+                print("  Temperature 2M: \(weatherData.hourly.temperature2M[index])")
             }
-        }else {
-            print("preparation fail")
+            
+            if index < weatherData.hourly.weatherCode.count {
+                print("  Weather Code: \(weatherData.hourly.weatherCode[index])")
+            }
+
+            print("----")
         }
     }
 }

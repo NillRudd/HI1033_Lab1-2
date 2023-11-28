@@ -41,9 +41,6 @@ struct DbManager {
             timezone TEXT,
             timezoneAbbreviation TEXT,
             elevation INTEGER,
-            hourlyUnitsTime TEXT,
-            hourlyUnitsTemperature2M TEXT,
-            hourlyUnitsWeatherCode TEXT,
             hourlyTime TEXT,
             hourlyTemperature2M TEXT,
             hourlyWeatherCode TEXT
@@ -74,13 +71,10 @@ struct DbManager {
                 timezone,
                 timezoneAbbreviation,
                 elevation,
-                hourlyUnitsTime,
-                hourlyUnitsTemperature2M,
-                hourlyUnitsWeatherCode,
                 hourlyTime,
                 hourlyTemperature2M,
                 hourlyWeatherCode
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         """
 
         var statement: OpaquePointer? = nil
@@ -94,12 +88,9 @@ struct DbManager {
             sqlite3_bind_text(statement, 5, weatherData.timezone, -1, nil)
             sqlite3_bind_text(statement, 6, weatherData.timezoneAbbreviation, -1, nil)
             sqlite3_bind_int(statement, 7, Int32(weatherData.elevation))
-            sqlite3_bind_text(statement, 8, weatherData.hourlyUnits.time, -1, nil)
-            sqlite3_bind_text(statement, 9, weatherData.hourlyUnits.temperature2M, -1, nil)
-            sqlite3_bind_text(statement, 10, weatherData.hourlyUnits.weatherCode, -1, nil)
-            sqlite3_bind_text(statement, 11, weatherData.hourly.time[0], -1, nil) // assuming hourly.time is an array
-            sqlite3_bind_double(statement, 12, weatherData.hourly.temperature2M[0])
-            sqlite3_bind_int(statement, 13, Int32(weatherData.hourly.weatherCode[0]))
+            sqlite3_bind_text(statement, 8, weatherData.hourly.time.joined(separator: ","), -1, nil)
+            sqlite3_bind_text(statement, 9, weatherData.hourly.temperature2M.map { String($0) }.joined(separator: ","), -1, nil)
+            sqlite3_bind_text(statement, 10, weatherData.hourly.weatherCode.map { String($0) }.joined(separator: ","), -1, nil)
 
             if sqlite3_step(statement) == SQLITE_DONE {
                 print("Data insertion success")
@@ -130,12 +121,22 @@ struct DbManager {
                 let timezone = String(cString: sqlite3_column_text(statement, 4))
                 let timezoneAbbreviation = String(cString: sqlite3_column_text(statement, 5))
                 let elevation = Int(sqlite3_column_int(statement, 6))
-                let hourlyUnitsTime = String(cString: sqlite3_column_text(statement, 7))
-                let hourlyUnitsTemperature2M = String(cString: sqlite3_column_text(statement, 8))
-                let hourlyUnitsWeatherCode = String(cString: sqlite3_column_text(statement, 9))
-                let hourlyTime = String(cString: sqlite3_column_text(statement, 10))
-                let hourlyTemperature2M = String(cString: sqlite3_column_text(statement, 11))
-                let hourlyWeatherCode = String(cString: sqlite3_column_text(statement, 12))
+
+                let hourlyTime = String(cString: sqlite3_column_text(statement, 7))
+                let hourlyTemperature2M = String(cString: sqlite3_column_text(statement, 8))
+                let hourlyWeatherCode = String(cString: sqlite3_column_text(statement, 9))
+
+                // Split the comma-separated strings into arrays
+                let hourlyTimeArray = hourlyTime.components(separatedBy: ",")
+                let hourlyTemperature2MArray = hourlyTemperature2M.components(separatedBy: ",")
+                let hourlyWeatherCodeArray = hourlyWeatherCode.components(separatedBy: ",")
+
+                // Create Hourly instance
+                let hourly = Hourly(
+                    time: hourlyTimeArray,
+                    temperature2M: hourlyTemperature2MArray.compactMap { Double($0) },
+                    weatherCode: hourlyWeatherCodeArray.compactMap { Int($0) }
+                )
 
                 let weatherData = WeatherData(
                     latitude: latitude,
@@ -145,8 +146,7 @@ struct DbManager {
                     timezone: timezone,
                     timezoneAbbreviation: timezoneAbbreviation,
                     elevation: elevation,
-                    hourlyUnits: HourlyUnits(time: hourlyUnitsTime, temperature2M: hourlyUnitsTemperature2M, weatherCode: hourlyUnitsWeatherCode),
-                    hourly: Hourly(time: [hourlyTime], temperature2M: [Double(hourlyTemperature2M) ?? 0.0], weatherCode: [Int(hourlyWeatherCode) ?? 0])
+                    hourly: hourly
                 )
 
                 weatherDataArray.append(weatherData)
