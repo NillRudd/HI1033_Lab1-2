@@ -12,6 +12,8 @@ struct WeatherModel {
     var latitude = 59.3293
     var longitude = 18.0686
     
+    
+    
     init(latitude: Double = 59.3293, longitude: Double = 18.0686) {
         self.latitude = latitude
         self.longitude = longitude
@@ -36,9 +38,4 @@ struct WeatherModel {
         
         session.finishTasksAndInvalidate()
     }
-    
-    
-    
-    
-    
 }

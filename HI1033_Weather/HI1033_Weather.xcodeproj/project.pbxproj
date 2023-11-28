@@ -19,6 +19,7 @@
 		85060C532B14BDB300B544AB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 85060C522B14BDB300B544AB /* Preview Assets.xcassets */; };
 		85060C552B14BDB300B544AB /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85060C542B14BDB300B544AB /* Persistence.swift */; };
 		85060C582B14BDB300B544AB /* HI1033_Weather.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 85060C562B14BDB300B544AB /* HI1033_Weather.xcdatamodeld */; };
+		85060C5F2B15FDB100B544AB /* WeatherDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85060C5E2B15FDB100B544AB /* WeatherDataModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		85060C522B14BDB300B544AB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		85060C542B14BDB300B544AB /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		85060C572B14BDB300B544AB /* HI1033_Weather.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HI1033_Weather.xcdatamodel; sourceTree = "<group>"; };
+		85060C5E2B15FDB100B544AB /* WeatherDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDataModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 				85060C542B14BDB300B544AB /* Persistence.swift */,
 				5BB2D3B02B14C0B90071C480 /* WeatherModel.swift */,
 				5BB249582B14E52100ED0AF5 /* WeatherApiData.swift */,
+				85060C5E2B15FDB100B544AB /* WeatherDataModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -192,6 +195,7 @@
 				85060C582B14BDB300B544AB /* HI1033_Weather.xcdatamodeld in Sources */,
 				5BB2D3B52B14C33D0071C480 /* rowView.swift in Sources */,
 				85060C4C2B14BDB200B544AB /* HI1033_WeatherApp.swift in Sources */,
+				85060C5F2B15FDB100B544AB /* WeatherDataModel.swift in Sources */,
 				5BB2D3B12B14C0B90071C480 /* WeatherModel.swift in Sources */,
 				5BB2D3B32B14C0DA0071C480 /* WeatherVM.swift in Sources */,
 				5BB249592B14E52100ED0AF5 /* WeatherApiData.swift in Sources */,
