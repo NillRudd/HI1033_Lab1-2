@@ -13,7 +13,7 @@
 import Foundation
 
 // MARK: - Welcome
-struct Welcome: Codable {
+struct WeatherData: Codable {
     let latitude, longitude, generationtimeMS: Double
     let utcOffsetSeconds: Int
     let timezone, timezoneAbbreviation: String

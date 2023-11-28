@@ -20,6 +20,9 @@ struct WeatherModel {
     }
     
     func getData() {
+        let wheatherapi = WeatherApiData()
+        wheatherapi.getData()
+        /*
         let endpoint = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&hourly=temperature_2m,weather_code")!
         
         let sessionConfig = URLSessionConfiguration.default
@@ -37,5 +40,7 @@ struct WeatherModel {
         task.resume()
         
         session.finishTasksAndInvalidate()
+         */
     }
+         
 }

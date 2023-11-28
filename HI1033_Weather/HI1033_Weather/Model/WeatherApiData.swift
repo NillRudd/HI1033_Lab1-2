@@ -12,12 +12,13 @@ import SQLite3
 struct WeatherApiData{
     
     private var theModel : WeatherModel
-    
     var db : OpaquePointer?
     var path : String = "myDb.sqlite"
+    private var dbManager : DbManager
 
     init(){
         theModel = WeatherModel()
+        dbManager = DbManager();
     }
     
     func getData() {
@@ -31,8 +32,13 @@ struct WeatherApiData{
                 print("error: \(error.localizedDescription)")
             } else if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
-                    let welcome = try? JSONDecoder().decode(Welcome.self, from: data)
-                    //print("Data recieved: \(dataString)")
+                    if let weatherData = try? JSONDecoder().decode(WeatherData.self, from: data) {
+                        dbManager.insertWeatherData(weatherData: weatherData)
+                        //print("Data received: \(dataString)")
+                        print(dbManager.getWeatherData())
+                    } else {
+                        print("Failed to decode JSON into WeatherData")
+                    }
                 }
             }
         }
