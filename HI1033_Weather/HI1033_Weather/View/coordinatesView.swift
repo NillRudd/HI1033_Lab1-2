@@ -20,15 +20,21 @@ struct coordinatesView: View {
             TextField("Longitude", text: $VM.longitude)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 //.keyboardType(.decimalPad)
-            Button("Submit") {
+            Button {
                 //theViewModel.saveToCoreData()
                 //isSettingsViewActive = false
-            }.background(.blue)
+            }label: {
+                Text("Submit")
+                    .padding(7)
+            }
+            
+            .background(Color(red: 0.8, green: 0.8, blue: 0.8))
                 .cornerRadius(5)
                 .foregroundColor(.black)
+                .shadow(radius: 1.5, x: 1.5, y:1.5)
         }
-        .padding()
-        .background(Color.gray)
+        .padding(7)
+        .background(Color(red: 0.9, green: 0.9, blue: 0.9))
     }
 }
 

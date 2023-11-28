@@ -11,12 +11,16 @@ struct listView: View {
     @EnvironmentObject var VM: WeatherVM
     var body: some View {
         VStack{
+            Spacer()
             HStack{
-                Text("Weather Forecast")
-                    .foregroundColor(.white)
-                    .background(.blue)
-                    .padding()
-                    .frame(alignment: .leading)
+                    Text("Weather Forecast")
+                    .font(.title3)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(.blue)
+
+
             }
             Text("Approved time 2022-07-14")
             List{
