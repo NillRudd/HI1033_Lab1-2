@@ -16,6 +16,7 @@ class WeatherVM : ObservableObject {
     @Published var time : String
     
     
+    
     init(){
         theModel = WeatherModel()
         //dbManager = DbManager()
