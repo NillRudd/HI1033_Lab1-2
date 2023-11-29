@@ -25,12 +25,12 @@ struct listView: View {
             Text("Approved time 2022-07-14")
             List{
                 ForEach (0..<15) { index in
-                    rowView(timestamp: Date.now, icon: "☁️", temp: 18)
+                    rowView(timestamp: VM.weatherData.hourly.time[index], icon: "☁️", temp: VM.weatherData.hourly.temperature2M[index])
                 }
                 
             }.listStyle(PlainListStyle())
             
-            coordinatesView().environmentObject(WeatherVM())
+            coordinatesView()
         }
     }
     

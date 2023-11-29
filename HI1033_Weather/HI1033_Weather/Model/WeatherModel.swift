@@ -10,16 +10,15 @@ import Foundation
 
 
 struct WeatherModel {
-    private var dbManager : DbManager
     var latitude = 59.3293
     var longitude = 18.0686
     private var weatherData : [WeatherData] = []
-    
+    private var persistenceController : PersistenceController
     
     init(latitude: Double = 59.3293, longitude: Double = 18.0686) {
         self.latitude = latitude
         self.longitude = longitude
-        self.dbManager = DbManager()
+        persistenceController = PersistenceController()
         getData()
         updateWeatherData()
     }
@@ -28,9 +27,7 @@ struct WeatherModel {
         return weatherData[0]
     }
     
-    
-    
-   func getData() {
+    func getData() {
         let endpoint = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&hourly=temperature_2m,weather_code")!
         
         let sessionConfig = URLSessionConfiguration.default
@@ -42,8 +39,8 @@ struct WeatherModel {
             } else if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
                     if let jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
-                        dbManager.insertWeatherData(weatherData: jsonData)
-                        print("jsonData")
+                        persistenceController.saveWeatherData(weatherData: jsonData)
+                        print(persistenceController.fetchWeatherData())
                     } else {
                         print("Failed to decode JSON into WeatherData")
                     }
@@ -56,7 +53,6 @@ struct WeatherModel {
     }
     
     mutating func updateWeatherData(){
-        self.weatherData = dbManager.getWeatherData()
+        self.weatherData = persistenceController.fetchWeatherData()!
     }
-         
 }

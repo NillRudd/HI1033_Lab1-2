@@ -9,13 +9,24 @@ import CoreData
 
 struct PersistenceController {
     static let shared = PersistenceController()
+    let container: NSPersistentContainer
 
+    init() {
+        container = NSPersistentContainer(name: "HI1033_Weather")
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        })
+        container.viewContext.automaticallyMergesChangesFromParent = true
+    }
+    
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         for _ in 0..<10 {
             let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+            //newItem.timestamp = Date()
         }
         do {
             try viewContext.save()
@@ -28,7 +39,70 @@ struct PersistenceController {
         return result
     }()
 
-    let container: NSPersistentContainer
+    func saveWeatherData(weatherData: WeatherData) {
+        let viewContext = container.viewContext
+
+        // Replace "Item" with the actual name of your entity for the data
+        let item = Item(context: viewContext)
+        item.latitude = weatherData.latitude
+        item.longitude = weatherData.longitude
+        item.generationTime = weatherData.generationtimeMS
+        item.utcOffset = Int32(weatherData.utcOffsetSeconds)
+        item.timezone = weatherData.timezone
+        item.timezoneAbbreviation = weatherData.timezoneAbbreviation
+        item.elevation = Double(weatherData.elevation)
+
+        // Serialize the hourly weather data and store it in the attribute
+        let encoder = JSONEncoder()
+        if let hourlyData = try? encoder.encode(weatherData.hourly) {
+            item.hourlyWeatherData = hourlyData
+        }
+
+        // Save changes to Core Data
+        do {
+            try viewContext.save()
+        } catch {
+            fatalError("Unresolved error \(error), \(error.localizedDescription)")
+        }
+    }
+    
+    func fetchWeatherData() -> [WeatherData]? {
+        let viewContext = container.viewContext
+        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+
+        do {
+            let items = try viewContext.fetch(fetchRequest)
+            
+            // Transform fetched items into WeatherData objects
+            let weatherDataArray = items.compactMap { item -> WeatherData? in
+                guard let hourlyData = item.hourlyWeatherData else { return nil }
+                
+                let decoder = JSONDecoder()
+                if let hourly = try? decoder.decode(Hourly.self, from: hourlyData) {
+                    // Create WeatherData object
+                    let weatherData = WeatherData(
+                        latitude: item.latitude,
+                        longitude: item.longitude,
+                        generationtimeMS: item.generationTime,
+                        utcOffsetSeconds: Int(item.utcOffset),
+                        timezone: item.timezone ?? "",
+                        timezoneAbbreviation: item.timezoneAbbreviation ?? "",
+                        elevation: Int(item.elevation),
+                        hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
+                        hourly: hourly
+                    )
+                    return weatherData
+                } else {
+                    return nil
+                }
+            }
+
+            return weatherDataArray
+        } catch {
+            print("Error fetching data: \(error)")
+            return nil
+        }
+    }
 
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "HI1033_Weather")

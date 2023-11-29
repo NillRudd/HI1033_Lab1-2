@@ -10,28 +10,21 @@ import Foundation
 class WeatherVM : ObservableObject {
     
     private var theModel : WeatherModel
-    //private var dbManager : DbManager
     @Published var latitude : String
     @Published var longitude : String
     @Published var time : String
+    @Published var weatherData : WeatherData
     
     
     
     init(){
         theModel = WeatherModel()
-        //dbManager = DbManager()
         latitude = String(theModel.latitude)
         longitude = String(theModel.longitude)
         let currentDate = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         time = "Approved time \(dateFormatter.string(from: currentDate))"
-        theModel.getData()
-        
+        weatherData = theModel.getWeatherData()
     }
-    
-    
-    
-    
-    
 }
