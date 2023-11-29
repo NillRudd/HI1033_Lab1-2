@@ -14,6 +14,7 @@ class WeatherVM : ObservableObject {
     @Published var latitude : String
     @Published var longitude : String
     @Published var time : String
+    @Published var locationString : String = "Stockholm"
     
     
     
@@ -26,12 +27,17 @@ class WeatherVM : ObservableObject {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         time = "Approved time \(dateFormatter.string(from: currentDate))"
-        theModel.getData()
-        
+        //theModel.getData()
+        //theModel.getGeoData()
     }
     
     
-    
+    func handleNewLocation(){
+        theModel.locationString = locationString
+        print(theModel.getGeoData())
+        
+        
+    }
     
     
 }

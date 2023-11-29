@@ -14,14 +14,15 @@ struct WeatherModel {
     var latitude = 59.3293
     var longitude = 18.0686
     private var weatherData : [WeatherData] = []
-    
+    var locationString = "Stockholm"
+    var geoData : [GeoData] = []
     
     init(latitude: Double = 59.3293, longitude: Double = 18.0686) {
         self.latitude = latitude
         self.longitude = longitude
         self.dbManager = DbManager()
-        getData()
-        updateWeatherData()
+        //getData()
+        //updateWeatherData()
     }
     
     func getWeatherData() -> WeatherData{
@@ -54,6 +55,35 @@ struct WeatherModel {
         
         session.finishTasksAndInvalidate()
        }
+    
+
+    
+    
+    func getGeoData() -> [GeoData]{
+        let endpoint = URL(string: "https://www.smhi.se/wpt-a/backend_solr/autocomplete/search/\(locationString)")!
+        var geoData : [GeoData] = []
+        let sessionConfig = URLSessionConfiguration.default
+        let session = URLSession(configuration: sessionConfig)
+        
+        let task = session.dataTask(with: endpoint) { (data, response, error ) in
+            if let error = error {
+                print("error: \(error.localizedDescription)")
+            } else if let data = data {
+                if let dataString = String(data: data, encoding: .utf8) {
+                    do {
+                        geoData = try JSONDecoder().decode([GeoData].self, from: data)
+                    } catch {
+                        print("Failed to decode JSON into GeoData. Error: \(error)")
+                    }
+                }
+            }
+            
+        }
+        task.resume()
+        session.finishTasksAndInvalidate()
+        return geoData
+    }
+    
     
     
     func iconFromCode(code: Int) -> String {
@@ -96,5 +126,5 @@ struct WeatherModel {
     mutating func updateWeatherData(){
         self.weatherData = dbManager.getWeatherData()
     }
-         
+    
 }

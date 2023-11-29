@@ -10,17 +10,15 @@ import SwiftUI
 
 
 struct coordinatesView: View {
-    @EnvironmentObject var VM : WeatherVM
+    @EnvironmentObject var theViewModel : WeatherVM
     var body: some View {
         HStack {
-            TextField("Latitude", text: $VM.latitude)
+            TextField("Location", text: $theViewModel.locationString)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 //.keyboardType(.decimalPad)
-
-            TextField("Longitude", text: $VM.longitude)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
                 //.keyboardType(.decimalPad)
             Button {
+                theViewModel.handleNewLocation()
                 //theViewModel.saveToCoreData()
                 //isSettingsViewActive = false
             }label: {
