@@ -11,13 +11,11 @@ import Foundation
 
 struct WeatherModel {
 
-    private var dbManager : DbManager
     private (set) var latitude = 59.3293
     private (set) var longitude = 18.0686
-    private var weatherData : [WeatherData] = []
+    private (set )var weatherData : [WeatherData] = []
     var locationString = "Stockholm"
     var geoData : [GeoData] = []
-    private var weatherData : [WeatherData] = []
     private var persistenceController : PersistenceController
     
     init(latitude: Double = 59.3293, longitude: Double = 18.0686) {
@@ -53,7 +51,6 @@ struct WeatherModel {
                 if let dataString = String(data: data, encoding: .utf8) {
                     if let jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
                         persistenceController.saveWeatherData(weatherData: jsonData)
-                        print(persistenceController.fetchWeatherData())
                     } else {
                         print("Failed to decode JSON into WeatherData")
                     }

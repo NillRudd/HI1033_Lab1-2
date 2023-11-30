@@ -13,6 +13,10 @@ class WeatherVM : ObservableObject {
     @Published private var theModel : WeatherModel
     @Published var locationString : String = "Stockholm"
     
+    var weatherData: WeatherData{
+        theModel.weatherData[0]
+    }
+    
     var latitude: Double{
         theModel.latitude
     }
