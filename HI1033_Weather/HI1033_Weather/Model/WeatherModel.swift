@@ -16,7 +16,7 @@ struct WeatherModel {
     private var weatherData : [WeatherData] = []
     var locationString = "Stockholm"
     var geoData : [GeoData] = []
-    private var persistenceController : PersistenceController
+    private (set) var persistenceController : PersistenceController
     
     init(latitude: Double = 59.3293, longitude: Double = 18.0686) {
         self.latitude = latitude
@@ -34,8 +34,6 @@ struct WeatherModel {
             hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0])
         )
         weatherData.append(newWeatherData)
-        getData()
-        updateWeatherData()
     }
     
     func getWeatherData() -> WeatherData{
