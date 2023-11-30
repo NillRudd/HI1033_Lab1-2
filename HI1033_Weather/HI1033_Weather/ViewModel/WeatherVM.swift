@@ -48,7 +48,8 @@ class WeatherVM : ObservableObject {
 
     func getIconWithWeatherCode(code: Int) -> String {
         return theModel.iconFromCode(code: code)
-
+    }
+    
     func testNetwork(){
         
         let monitor = NWPathMonitor()
@@ -99,6 +100,9 @@ class WeatherVM : ObservableObject {
                         DispatchQueue.main.async {
                             //print("geodata: \(geoData)")
                           self.theModel.setCoordinates(latitude: geoData.lat, longitude: geoData.lon)
+                            self.theModel.getData()
+                            self.theModel.updateWeatherData()
+                            self.setupWeatherData()
 
                         }
                         

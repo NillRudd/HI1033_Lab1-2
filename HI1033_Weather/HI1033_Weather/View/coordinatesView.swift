@@ -19,6 +19,7 @@ struct coordinatesView: View {
                 //.keyboardType(.decimalPad)
             Button {
                 theViewModel.fetchGeoData()
+                
                 //theViewModel.saveToCoreData()
                 //isSettingsViewActive = false
             }label: {
