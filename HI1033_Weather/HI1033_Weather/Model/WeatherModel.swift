@@ -13,7 +13,7 @@ struct WeatherModel {
 
     private (set) var latitude = 59.3293
     private (set) var longitude = 18.0686
-    private (set )var weatherData : [WeatherData] = []
+    private var weatherData : [WeatherData] = []
     var locationString = "Stockholm"
     var geoData : [GeoData] = []
     private var persistenceController : PersistenceController
@@ -22,9 +22,20 @@ struct WeatherModel {
         self.latitude = latitude
         self.longitude = longitude
         persistenceController = PersistenceController()
+        let newWeatherData = WeatherData(
+            latitude: latitude,
+            longitude: longitude,
+            generationtimeMS: 0.0,
+            utcOffsetSeconds: 0,
+            timezone: "UTC",
+            timezoneAbbreviation: "UTC",
+            elevation: 0,
+            hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
+            hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0])
+        )
+        weatherData.append(newWeatherData)
         getData()
         updateWeatherData()
-
     }
     
     func getWeatherData() -> WeatherData{
@@ -48,7 +59,7 @@ struct WeatherModel {
             if let error = error {
                 print("error: \(error.localizedDescription)")
             } else if let data = data {
-                if let dataString = String(data: data, encoding: .utf8) {
+                if String(data: data, encoding: .utf8) != nil {
                     if let jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
                         persistenceController.saveWeatherData(weatherData: jsonData)
                     } else {
@@ -60,14 +71,7 @@ struct WeatherModel {
         task.resume()
         
         session.finishTasksAndInvalidate()
-       }
-    
-
-    
-    
-
-    
-    
+    }
     
     func iconFromCode(code: Int) -> String {
         var icon: String = ""
@@ -102,8 +106,6 @@ struct WeatherModel {
                         icon = "❓" // Unknown weather code
                     }
         return icon
-       
-       
     }
     
     mutating func updateWeatherData(){

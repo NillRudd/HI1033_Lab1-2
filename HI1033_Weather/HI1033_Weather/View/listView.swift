@@ -24,7 +24,7 @@ struct listView: View {
             }
             Text("Approved time 2022-07-14")
             List{
-                ForEach (0..<15) { index in
+                ForEach (0..<VM.weatherData.hourly.time.count) { index in
                     rowView(timestamp: VM.weatherData.hourly.time[index], icon: "☁️", temp: VM.weatherData.hourly.temperature2M[index])
                 }
                 

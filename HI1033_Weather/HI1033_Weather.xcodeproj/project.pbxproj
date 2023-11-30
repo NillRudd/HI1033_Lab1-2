@@ -59,9 +59,7 @@
 				85060C542B14BDB300B544AB /* Persistence.swift */,
 				5BB2D3B02B14C0B90071C480 /* WeatherModel.swift */,
 				85060C5E2B15FDB100B544AB /* WeatherDataModel.swift */,
-				5BD1C9DC2B1615C300CDF6EB /* DbManager.swift */,
 				5B00DED92B1772130034ED05 /* GeoDataModel.swift */,
-
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -195,8 +193,6 @@
 				85060C552B14BDB300B544AB /* Persistence.swift in Sources */,
 				5BB2D3B92B14C8C80071C480 /* coordinatesView.swift in Sources */,
 				5B00DEDA2B1772130034ED05 /* GeoDataModel.swift in Sources */,
-				5BD1C9DD2B1615C300CDF6EB /* DbManager.swift in Sources */,
-				85060C4E2B14BDB200B544AB /* ContentView.swift in Sources */,
 				85060C582B14BDB300B544AB /* HI1033_Weather.xcdatamodeld in Sources */,
 				5BB2D3B52B14C33D0071C480 /* rowView.swift in Sources */,
 				85060C4C2B14BDB200B544AB /* HI1033_WeatherApp.swift in Sources */,
@@ -334,6 +330,7 @@
 				DEVELOPMENT_TEAM = MTP3D43XNX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Weather;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -363,6 +360,7 @@
 				DEVELOPMENT_TEAM = MTP3D43XNX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Weather;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

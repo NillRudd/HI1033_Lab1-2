@@ -18,7 +18,8 @@ struct rowView: View {
                 Text(timestamp)
                 HStack{
                     Text(icon)
-                    Text("\(temp) °C").font(.title2)
+                    let formattedTemp = String(format: "%.1f", temp)
+                    Text("\(formattedTemp) °C").font(.title2)
                 }
             }
 

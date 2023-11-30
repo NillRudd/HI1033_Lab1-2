@@ -9,23 +9,35 @@ import Foundation
 
 class WeatherVM : ObservableObject {
     
+    @Published private var theModel: WeatherModel
+    @Published var locationString: String = "Stockholm"
+    @Published var weatherData: WeatherData
 
-    @Published private var theModel : WeatherModel
-    @Published var locationString : String = "Stockholm"
-    
-    var weatherData: WeatherData{
-        theModel.weatherData[0]
-    }
-    
-    var latitude: Double{
+    var latitude: Double {
         theModel.latitude
     }
-    var longitude: Double{
+
+    var longitude: Double {
         theModel.longitude
     }
-    
-    init(){
+
+    init() {
         theModel = WeatherModel()
+        weatherData = WeatherData(
+            latitude: 59.3293,
+            longitude: 18.0686,
+            generationtimeMS: 0.0,
+            utcOffsetSeconds: 0,
+            timezone: "UTC",
+            timezoneAbbreviation: "UTC",
+            elevation: 0,
+            hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
+            hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]))
+        setupWeatherData()
+    }
+
+    private func setupWeatherData() {
+        weatherData = theModel.getWeatherData()
     }
 
     
@@ -74,7 +86,7 @@ class WeatherVM : ObservableObject {
         }
 
         task.resume()
-    
+        
     }
 }
 
