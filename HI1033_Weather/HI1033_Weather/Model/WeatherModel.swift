@@ -10,8 +10,13 @@ import Foundation
 
 
 struct WeatherModel {
-    var latitude = 59.3293
-    var longitude = 18.0686
+
+    private var dbManager : DbManager
+    private (set) var latitude = 59.3293
+    private (set) var longitude = 18.0686
+    private var weatherData : [WeatherData] = []
+    var locationString = "Stockholm"
+    var geoData : [GeoData] = []
     private var weatherData : [WeatherData] = []
     private var persistenceController : PersistenceController
     
@@ -21,13 +26,21 @@ struct WeatherModel {
         persistenceController = PersistenceController()
         getData()
         updateWeatherData()
+
     }
     
     func getWeatherData() -> WeatherData{
         return weatherData[0]
     }
     
+
+    mutating func setCoordinates(latitude: Double, longitude: Double){
+        self.latitude = latitude
+        self.longitude = longitude
+    }
+    
     func getData() {
+
         let endpoint = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&hourly=temperature_2m,weather_code")!
         
         let sessionConfig = URLSessionConfiguration.default
@@ -51,6 +64,12 @@ struct WeatherModel {
         
         session.finishTasksAndInvalidate()
        }
+    
+
+    
+    
+
+    
     
     
     func iconFromCode(code: Int) -> String {
@@ -93,4 +112,5 @@ struct WeatherModel {
     mutating func updateWeatherData(){
         self.weatherData = persistenceController.fetchWeatherData()!
     }
+    
 }

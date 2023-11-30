@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5B00DED82B176D2D0034ED05 /* GeoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B00DED72B176D2D0034ED05 /* GeoModel.swift */; };
+		5B00DEDA2B1772130034ED05 /* GeoDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B00DED92B1772130034ED05 /* GeoDataModel.swift */; };
 		5BB2D3B12B14C0B90071C480 /* WeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB2D3B02B14C0B90071C480 /* WeatherModel.swift */; };
 		5BB2D3B32B14C0DA0071C480 /* WeatherVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB2D3B22B14C0DA0071C480 /* WeatherVM.swift */; };
 		5BB2D3B52B14C33D0071C480 /* rowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB2D3B42B14C33D0071C480 /* rowView.swift */; };
@@ -23,7 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5B00DED72B176D2D0034ED05 /* GeoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoModel.swift; sourceTree = "<group>"; };
+		5B00DED92B1772130034ED05 /* GeoDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoDataModel.swift; sourceTree = "<group>"; };
 		5BB2D3B02B14C0B90071C480 /* WeatherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
 		5BB2D3B22B14C0DA0071C480 /* WeatherVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherVM.swift; sourceTree = "<group>"; };
 		5BB2D3B42B14C33D0071C480 /* rowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rowView.swift; sourceTree = "<group>"; };
@@ -59,7 +59,9 @@
 				85060C542B14BDB300B544AB /* Persistence.swift */,
 				5BB2D3B02B14C0B90071C480 /* WeatherModel.swift */,
 				85060C5E2B15FDB100B544AB /* WeatherDataModel.swift */,
-				5B00DED72B176D2D0034ED05 /* GeoModel.swift */,
+				5BD1C9DC2B1615C300CDF6EB /* DbManager.swift */,
+				5B00DED92B1772130034ED05 /* GeoDataModel.swift */,
+
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -192,7 +194,9 @@
 				5BB2D3B72B14C5FD0071C480 /* listView.swift in Sources */,
 				85060C552B14BDB300B544AB /* Persistence.swift in Sources */,
 				5BB2D3B92B14C8C80071C480 /* coordinatesView.swift in Sources */,
-				5B00DED82B176D2D0034ED05 /* GeoModel.swift in Sources */,
+				5B00DEDA2B1772130034ED05 /* GeoDataModel.swift in Sources */,
+				5BD1C9DD2B1615C300CDF6EB /* DbManager.swift in Sources */,
+				85060C4E2B14BDB200B544AB /* ContentView.swift in Sources */,
 				85060C582B14BDB300B544AB /* HI1033_Weather.xcdatamodeld in Sources */,
 				5BB2D3B52B14C33D0071C480 /* rowView.swift in Sources */,
 				85060C4C2B14BDB200B544AB /* HI1033_WeatherApp.swift in Sources */,
