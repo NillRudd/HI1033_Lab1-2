@@ -13,7 +13,7 @@ struct coordinatesView: View {
     @EnvironmentObject var theViewModel : WeatherVM
     var body: some View {
         HStack {
-            TextField("Location", text: $theViewModel.locationString)
+            TextField("Location", text: $theViewModel.locationInput)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 //.keyboardType(.decimalPad)
                 //.keyboardType(.decimalPad)

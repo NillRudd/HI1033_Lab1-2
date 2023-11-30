@@ -22,6 +22,8 @@ struct listView: View {
 
 
             }
+            Text("\(VM.location)")
+                .font(.title)
             Text("Approved time 2022-07-14")
             List {
                 ForEach(VM.weatherData.hourly.time.indices, id: \.self) { index in
