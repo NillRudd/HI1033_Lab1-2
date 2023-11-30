@@ -13,8 +13,7 @@ struct HI1033_WeatherApp: App {
 
     var body: some Scene {
         WindowGroup {
-            listView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            listView().environmentObject(WeatherVM())
         }
     }
 }

@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct rowView: View {
-    let timestamp: Date
+    
+    let timestamp: String
     let icon : String
-    let temp: Int
+    let temp: Double
     var body: some View {
         HStack{
             VStack(alignment: .leading){
-                Text(formattedDate)
+                Text(timestamp)
                 HStack{
                     Text(icon)
                     Text("\(temp) °C").font(.title2)
@@ -25,16 +26,18 @@ struct rowView: View {
         }
     }
     
+    /*
     private var formattedDate: String{
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         return dateFormatter.string(from: timestamp)
     }
+     */
     
 }
 
 struct rowView_Previews: PreviewProvider {
     static var previews: some View {
-        rowView(timestamp: Date.now , icon: "🌞", temp: 15)
+        rowView(timestamp: "Date.now" , icon: "🌞", temp: 15)
     }
 }
