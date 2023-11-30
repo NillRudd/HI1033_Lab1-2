@@ -9,20 +9,21 @@ import Foundation
 
 class WeatherVM : ObservableObject {
     
-    private var theModel : WeatherModel
+    @Published private var theModel : WeatherModel
     //private var dbManager : DbManager
-    @Published var latitude : String
-    @Published var longitude : String
     @Published var time : String
     @Published var locationString : String = "Stockholm"
     
-    
+    var latitude: Double{
+        theModel.latitude
+    }
+    var longitude: Double{
+        theModel.longitude
+    }
     
     init(){
         theModel = WeatherModel()
         //dbManager = DbManager()
-        latitude = String(theModel.latitude)
-        longitude = String(theModel.longitude)
         let currentDate = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
@@ -30,14 +31,58 @@ class WeatherVM : ObservableObject {
         //theModel.getData()
         //theModel.getGeoData()
     }
+
     
-    
-    func handleNewLocation(){
-        theModel.locationString = locationString
-        print(theModel.getGeoData())
-        
-        
+    func fetchGeoData() {
+        guard let encodedLocationString = locationString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            print("Failed to encode location string")
+            return
+        }
+        guard let endpoint = URL(string: "https://www.smhi.se/wpt-a/backend_solr/autocomplete/search/\(encodedLocationString)") else {
+            print("Invalid URL")
+            return
+        }
+        let task = URLSession.shared.dataTask(with: endpoint) { data, response, error in
+            if let error = error {
+                print("Network request error: \(error)")
+                return
+            }
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+                print("Decoding JSON...")
+                guard let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else {
+                    print("Failed to parse JSON as array of dictionaries")
+                    return
+                }
+                print(jsonArray )
+                if let firstJson = jsonArray.first {
+                    do {
+                        let geoData = try JSONDecoder().decode(GeoData.self, from: JSONSerialization.data(withJSONObject: firstJson))
+                        DispatchQueue.main.async {
+                            //print("geodata: \(geoData)")
+                          self.theModel.setCoordinates(latitude: geoData.lat, longitude: geoData.lon)
+
+                        }
+                        
+                    } catch {
+                        print("Failed to decode GeoData for JSON: \(firstJson), Error: \(error)")
+                    }
+                }
+                
+            } catch {
+                print("Failed to parse JSON: \(error)")
+            }
+        }
+
+        task.resume()
     }
+
+    
     
     
 }
+
+

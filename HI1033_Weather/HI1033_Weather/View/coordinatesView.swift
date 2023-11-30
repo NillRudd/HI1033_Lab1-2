@@ -18,7 +18,7 @@ struct coordinatesView: View {
                 //.keyboardType(.decimalPad)
                 //.keyboardType(.decimalPad)
             Button {
-                theViewModel.handleNewLocation()
+                theViewModel.fetchGeoData()
                 //theViewModel.saveToCoreData()
                 //isSettingsViewActive = false
             }label: {
@@ -30,6 +30,10 @@ struct coordinatesView: View {
                 .cornerRadius(5)
                 .foregroundColor(.black)
                 .shadow(radius: 1.5, x: 1.5, y:1.5)
+            VStack {
+                Text("\(theViewModel.latitude)")
+                Text("\(theViewModel.longitude)")
+            }
         }
         .padding(7)
         .background(Color(red: 0.9, green: 0.9, blue: 0.9))
