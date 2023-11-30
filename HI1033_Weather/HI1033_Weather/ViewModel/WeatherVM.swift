@@ -38,12 +38,10 @@ class WeatherVM : ObservableObject {
             setupWeatherData()
         theModel.persistenceController.saveWeatherData(weatherData: weatherData)
         testNetwork()
-        
-        
     }
 
     private func setupWeatherData() {
-        weatherData = theModel.getWeatherData()
+        self.weatherData = self.theModel.getWeatherData()
     }
 
     func getIconWithWeatherCode(code: Int) -> String {
@@ -57,12 +55,13 @@ class WeatherVM : ObservableObject {
             if path.status == .satisfied {
                 print("We're connected!")
                 self.theModel.getData()
-            
             } else {
                 print("No connection.")
             }
+            
             self.theModel.updateWeatherData()
             self.setupWeatherData()
+            
             print(path.isExpensive)
         }
         let queue = DispatchQueue(label: "Monitor")

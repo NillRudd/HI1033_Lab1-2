@@ -37,7 +37,7 @@ struct WeatherModel {
     }
     
     func getWeatherData() -> WeatherData{
-        return weatherData[0]
+        return weatherData[weatherData.count-1]
     }
     
 
