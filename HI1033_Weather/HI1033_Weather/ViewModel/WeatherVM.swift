@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Network
+
 
 class WeatherVM : ObservableObject {
     
@@ -33,17 +35,38 @@ class WeatherVM : ObservableObject {
             elevation: 0,
             hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
             hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]))
-        setupWeatherData()
+            setupWeatherData()
+        theModel.persistenceController.saveWeatherData(weatherData: weatherData)
+        testNetwork()
+        
+        
     }
 
     private func setupWeatherData() {
         weatherData = theModel.getWeatherData()
     }
-    
+
     func getIconWithWeatherCode(code: Int) -> String {
         return theModel.iconFromCode(code: code)
-    }
 
+    func testNetwork(){
+        
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { path in
+            if path.status == .satisfied {
+                print("We're connected!")
+                self.theModel.getData()
+            
+            } else {
+                print("No connection.")
+            }
+            self.theModel.updateWeatherData()
+            self.setupWeatherData()
+            print(path.isExpensive)
+        }
+        let queue = DispatchQueue(label: "Monitor")
+        monitor.start(queue: queue)
+    }
     
     func fetchGeoData() {
         guard let encodedLocationString = locationString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
