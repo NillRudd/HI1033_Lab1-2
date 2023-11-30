@@ -39,6 +39,10 @@ class WeatherVM : ObservableObject {
     private func setupWeatherData() {
         weatherData = theModel.getWeatherData()
     }
+    
+    func getIconWithWeatherCode(code: Int) -> String {
+        return theModel.iconFromCode(code: code)
+    }
 
     
     func fetchGeoData() {
