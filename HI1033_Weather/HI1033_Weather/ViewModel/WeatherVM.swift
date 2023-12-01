@@ -26,44 +26,51 @@ class WeatherVM : ObservableObject {
     init() {
         theModel = WeatherModel()
         weatherData = WeatherData(
-            latitude: 59.3293,
-            longitude: 18.0686,
+            latitude: 0,
+            longitude: 0,
             generationtimeMS: 0.0,
             utcOffsetSeconds: 0,
             timezone: "UTC",
             timezoneAbbreviation: "UTC",
             elevation: 0,
             hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
-            hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]))
+            hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]),
+            dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
+            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
+        )
             setupWeatherData()
         theModel.persistenceController.saveWeatherData(weatherData: weatherData)
         testNetwork()
     }
 
     private func setupWeatherData() {
-        self.weatherData = self.theModel.getWeatherData()
+        DispatchQueue.main.async {
+            self.weatherData = self.theModel.getWeatherData()
+        }
     }
 
     func getIconWithWeatherCode(code: Int) -> String {
         return theModel.iconFromCode(code: code)
     }
     
-    func testNetwork(){
-        
+    func testNetwork() {
         let monitor = NWPathMonitor()
         monitor.pathUpdateHandler = { path in
-            if path.status == .satisfied {
-                print("We're connected!")
-                self.theModel.getData()
-            } else {
-                print("No connection.")
+            DispatchQueue.main.async {
+                if path.status == .satisfied {
+                    print("We're connected!")
+                    self.theModel.getData()
+                } else {
+                    print("No connection.")
+                }
+
+                self.theModel.updateWeatherData()
+                self.setupWeatherData()
+
+                print(path.isExpensive)
             }
-            
-            self.theModel.updateWeatherData()
-            self.setupWeatherData()
-            
-            print(path.isExpensive)
         }
+
         let queue = DispatchQueue(label: "Monitor")
         monitor.start(queue: queue)
     }

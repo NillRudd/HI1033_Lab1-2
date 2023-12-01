@@ -5,8 +5,6 @@
 //  Created by Niklas Roslund on 2023-11-28.
 //
 
-// This file was generated from JSON Schema using quicktype, do not modify it directly.
-// To parse the JSON, add this file to your project and do:
 //
 //   let welcome = try? JSONDecoder().decode(Welcome.self, from: jsonData)
 
@@ -20,20 +18,9 @@ struct WeatherData: Codable {
     let elevation: Int
     let hourlyUnits: HourlyUnits
     let hourly: Hourly
+    let dailyUnits: DailyUnits
+    let daily: Daily
 
-    
-    init(latitude: Double, longitude: Double, generationtimeMS: Double, utcOffsetSeconds: Int, timezone: String, timezoneAbbreviation: String, elevation: Int, hourlyUnits: HourlyUnits, hourly: Hourly) {
-        self.latitude = latitude
-        self.longitude = longitude
-        self.generationtimeMS = generationtimeMS
-        self.utcOffsetSeconds = utcOffsetSeconds
-        self.timezone = timezone
-        self.timezoneAbbreviation = timezoneAbbreviation
-        self.elevation = elevation
-        self.hourlyUnits = hourlyUnits
-        self.hourly = hourly
-    }
-    
     enum CodingKeys: String, CodingKey {
         case latitude, longitude
         case generationtimeMS = "generationtime_ms"
@@ -43,6 +30,47 @@ struct WeatherData: Codable {
         case elevation
         case hourlyUnits = "hourly_units"
         case hourly
+        case dailyUnits = "daily_units"
+        case daily
+    }
+    init(latitude: Double, longitude: Double, generationtimeMS: Double, utcOffsetSeconds: Int, timezone: String, timezoneAbbreviation: String, elevation: Int, hourlyUnits: HourlyUnits, hourly: Hourly, dailyUnits: DailyUnits, daily: Daily) {
+        self.latitude = latitude
+        self.longitude = longitude
+        self.generationtimeMS = generationtimeMS
+        self.utcOffsetSeconds = utcOffsetSeconds
+        self.timezone = timezone
+        self.timezoneAbbreviation = timezoneAbbreviation
+        self.elevation = elevation
+        self.hourlyUnits = hourlyUnits
+        self.hourly = hourly
+        self.dailyUnits = dailyUnits
+        self.daily = daily
+    }
+}
+
+// MARK: - Daily
+struct Daily: Codable {
+    let time: [String]
+    let weatherCode: [Int]
+    let temperature2MMax, temperature2MMin: [Double]
+
+    enum CodingKeys: String, CodingKey {
+        case time
+        case weatherCode = "weather_code"
+        case temperature2MMax = "temperature_2m_max"
+        case temperature2MMin = "temperature_2m_min"
+    }
+}
+
+// MARK: - DailyUnits
+struct DailyUnits: Codable {
+    let time, weatherCode, temperature2MMax, temperature2MMin: String
+
+    enum CodingKeys: String, CodingKey {
+        case time
+        case weatherCode = "weather_code"
+        case temperature2MMax = "temperature_2m_max"
+        case temperature2MMin = "temperature_2m_min"
     }
 }
 
