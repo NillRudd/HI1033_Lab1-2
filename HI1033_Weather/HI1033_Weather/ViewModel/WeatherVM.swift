@@ -165,6 +165,38 @@ class WeatherVM : ObservableObject {
             daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
         )
     }
+
+    func formatDatetoHour(timestamp: String) -> String{
+        let dateFormatter = DateFormatter()
+        var hour = ""
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm"
+        if let date = dateFormatter.date(from: timestamp) {
+            let calendar = Calendar.current
+            hour = String(calendar.component(.hour, from: date))
+        } else {
+            print("Failed to parse the date string: \(timestamp)")
+        }
+        return hour
+    }
+    
+    func formatDatetoWeekDay(timestamp: String) -> String{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        if let date = dateFormatter.date(from: timestamp){
+            if Calendar.current.isDateInToday(date) {
+                return "Today"
+            } else{
+                dateFormatter.dateFormat = "EEEE"
+                return dateFormatter.string(from: date)
+            }
+
+        } else {
+            print("Failed to parse the date string to a WeekDay: \(timestamp)")
+        }
+    
+            return ""
+        
+    }
 }
 
 

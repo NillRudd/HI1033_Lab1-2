@@ -53,7 +53,7 @@ struct WeatherModel {
     mutating func setLocation(location: String){
         self.location = location
     }
-    
+ 
     func iconFromCode(code: Int) -> String {
         var icon: String = ""
         switch code {

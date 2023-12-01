@@ -8,37 +8,41 @@
 import SwiftUI
 
 struct rowView: View {
+    @EnvironmentObject var VM: WeatherVM
     
     let timestamp: String
     let icon : String
-    let temp: Double
+    let tempMin: Double
+    let tempMax: Double
     var body: some View {
         HStack{
-            VStack(alignment: .leading){
-                Text(timestamp)
-                HStack{
-                    Text(icon)
-                    let formattedTemp = String(format: "%.1f", temp)
-                    Text("\(formattedTemp) °C").font(.title2)
-                }
-            }
 
-            
+            Text("\(VM.formatDatetoWeekDay(timestamp: timestamp))  ")
+            Spacer()
+            Text(icon)
+            Spacer()
+            let formattedTempMin = String(format: "%.0f", tempMin)
+            let formattedTempMax = String(format: "%.0f", tempMax)
+            Text("\(formattedTempMin)°").font(.title2)
+            Spacer()
+            Text(" - ").font(.title2)
+            Spacer()
+            Text("\(formattedTempMax)°").font(.title2)
         }
     }
     
     /*
-    private var formattedDate: String{
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-        return dateFormatter.string(from: timestamp)
-    }
+     private var formattedDate: String{
+     let dateFormatter = DateFormatter()
+     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+     return dateFormatter.string(from: timestamp)
+     }
      */
     
 }
 
 struct rowView_Previews: PreviewProvider {
     static var previews: some View {
-        rowView(timestamp: "Date.now" , icon: "🌞", temp: 15)
+        rowView(timestamp: "2023-12-02" , icon: "🌞", tempMin: 15, tempMax:20).environmentObject(WeatherVM())
     }
 }

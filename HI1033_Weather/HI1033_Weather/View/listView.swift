@@ -1,46 +1,33 @@
 //
-//  listView.swift
+//  ListView.swift
 //  HI1033_Weather
 //
-//  Created by Esteban Masaya on 2023-11-27.
+//  Created by Esteban Masaya on 2023-12-01.
 //
 
 import SwiftUI
 
 struct listView: View {
     @EnvironmentObject var VM: WeatherVM
+
     var body: some View {
-        VStack{
-            Spacer()
-            HStack{
-                    Text("Weather Forecast")
-                    .font(.title3)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(.blue)
-
-
-            }
-            Text("\(VM.location)")
-                .font(.title)
-            Text("Approved time 2022-07-14")
-            List {
-                ForEach(VM.weatherData.hourly.time.indices, id: \.self) { index in
-                    rowView(timestamp: VM.weatherData.hourly.time[index],
-                            icon: VM.getIconWithWeatherCode(code: VM.weatherData.hourly.weatherCode[index]),
-                            temp: VM.weatherData.hourly.temperature2M[index])
+        List {
+            ForEach(VM.weatherData.daily.time.prefix(24), id: \.self) { timestamp in
+                if let index = VM.weatherData.daily.time.firstIndex(of: timestamp) {
+                    rowView(
+                        timestamp: VM.weatherData.daily.time[index],
+                        icon: VM.getIconWithWeatherCode(code: VM.weatherData.daily.weatherCode[index]),
+                        tempMin: VM.weatherData.daily.temperature2MMin[index],
+                        tempMax: VM.weatherData.daily.temperature2MMax[index]
+                    ).padding(.vertical)
                 }
             }
-            .listStyle(PlainListStyle())
-            
-            coordinatesView()
         }
+        .listStyle(PlainListStyle())
     }
-    
 }
 
-struct listView_Previews: PreviewProvider {
+struct ListView_Previews: PreviewProvider {
     static var previews: some View {
         listView().environmentObject(WeatherVM())
     }
