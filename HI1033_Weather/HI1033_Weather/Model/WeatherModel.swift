@@ -67,6 +67,7 @@ struct WeatherModel {
             } else if let data = data {
                 if String(data: data, encoding: .utf8) != nil {
                     if let jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
+                        print("AQUI!: \(jsonData)")
                         persistenceController.saveWeatherData(weatherData: jsonData)
                         
                     } else {
