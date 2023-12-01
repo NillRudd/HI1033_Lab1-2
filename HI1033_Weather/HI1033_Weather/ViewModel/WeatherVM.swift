@@ -12,9 +12,12 @@ import Network
 class WeatherVM : ObservableObject {
     
     @Published private var theModel: WeatherModel
-    @Published var locationString: String = "Stockholm"
+    @Published var locationInput: String = "Stockholm"
     @Published var weatherData: WeatherData
 
+    var location: String{
+        theModel.location
+    }
     var latitude: Double {
         theModel.latitude
     }
@@ -76,7 +79,7 @@ class WeatherVM : ObservableObject {
     }
     
     func fetchGeoData() {
-        guard let encodedLocationString = locationString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+        guard let encodedLocationString = locationInput.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             print("Failed to encode location string")
             return
         }
@@ -106,6 +109,7 @@ class WeatherVM : ObservableObject {
                         DispatchQueue.main.async {
                             //print("geodata: \(geoData)")
                           self.theModel.setCoordinates(latitude: geoData.lat, longitude: geoData.lon)
+                            self.theModel.setLocation(location: geoData.place)
                             self.theModel.getData()
                             self.theModel.updateWeatherData()
                             self.setupWeatherData()
