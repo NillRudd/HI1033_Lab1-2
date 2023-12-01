@@ -13,7 +13,7 @@ struct WeatherModel {
 
     private (set) var latitude = 59.3293
     private (set) var longitude = 18.0686
-    private var weatherData : [WeatherData] = []
+    private (set) var weatherData : [WeatherData] = []
     private (set) var location = "Stockholm"
     var geoData : [GeoData] = []
     private (set) var persistenceController : PersistenceController
@@ -50,31 +50,7 @@ struct WeatherModel {
         self.location = location
     }
     
-    func getData() {
 
-        let endpoint = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&hourly=temperature_2m,weather_code")!
-        
-        let sessionConfig = URLSessionConfiguration.default
-        let session = URLSession(configuration: sessionConfig)
-        
-        let task = session.dataTask(with: endpoint) { (data, response, error ) in
-            if let error = error {
-                print("error: \(error.localizedDescription)")
-            } else if let data = data {
-                if String(data: data, encoding: .utf8) != nil {
-                    if let jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
-                        persistenceController.saveWeatherData(weatherData: jsonData)
-                        
-                    } else {
-                        print("Failed to decode JSON into WeatherData")
-                    }
-                }
-            }
-        }
-        task.resume()
-        
-        session.finishTasksAndInvalidate()
-    }
     
     func iconFromCode(code: Int) -> String {
         var icon: String = ""

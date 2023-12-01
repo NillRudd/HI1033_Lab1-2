@@ -13,8 +13,10 @@ class WeatherVM : ObservableObject {
     
     @Published private var theModel: WeatherModel
     @Published var locationInput: String = "Stockholm"
-    @Published var weatherData: WeatherData
 
+    var weatherData: [WeatherData]{
+        theModel.weatherData
+    }
     var location: String{
         theModel.location
     }
@@ -28,23 +30,7 @@ class WeatherVM : ObservableObject {
 
     init() {
         theModel = WeatherModel()
-        weatherData = WeatherData(
-            latitude: 59.3293,
-            longitude: 18.0686,
-            generationtimeMS: 0.0,
-            utcOffsetSeconds: 0,
-            timezone: "UTC",
-            timezoneAbbreviation: "UTC",
-            elevation: 0,
-            hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
-            hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]))
-            setupWeatherData()
-        theModel.persistenceController.saveWeatherData(weatherData: weatherData)
         testNetwork()
-    }
-
-    private func setupWeatherData() {
-        self.weatherData = self.theModel.getWeatherData()
     }
 
     func getIconWithWeatherCode(code: Int) -> String {
@@ -57,19 +43,51 @@ class WeatherVM : ObservableObject {
         monitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
                 print("We're connected!")
-                self.theModel.getData()
+                self.getData()
             } else {
                 print("No connection.")
             }
-            
-            self.theModel.updateWeatherData()
-            self.setupWeatherData()
+            DispatchQueue.main.async {
+                self.theModel.updateWeatherData()
+            }
             
             print(path.isExpensive)
         }
         let queue = DispatchQueue(label: "Monitor")
         monitor.start(queue: queue)
     }
+    
+    
+    func getData() {
+
+        let endpoint = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&hourly=temperature_2m,weather_code")!
+        
+        let sessionConfig = URLSessionConfiguration.default
+        let session = URLSession(configuration: sessionConfig)
+        
+        let task = session.dataTask(with: endpoint) { (data, response, error ) in
+            if let error = error {
+                print("error: \(error.localizedDescription)")
+            } else if let data = data {
+                if String(data: data, encoding: .utf8) != nil {
+                    if let jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
+                        DispatchQueue.main.async {
+                            print("HOLA \(jsonData)")
+                            self.theModel.persistenceController.saveWeatherData(weatherData: jsonData)
+                            self.theModel.updateWeatherData()
+
+                        }
+                    } else {
+                        print("Failed to decode JSON into WeatherData")
+                    }
+                }
+            }
+        }
+        task.resume()
+        
+        session.finishTasksAndInvalidate()
+    }
+    
     
     func fetchGeoData() {
         guard let encodedLocationString = locationInput.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
@@ -95,18 +113,16 @@ class WeatherVM : ObservableObject {
                     print("Failed to parse JSON as array of dictionaries")
                     return
                 }
-                print(jsonArray )
+                //print(jsonArray )
                 if let firstJson = jsonArray.first {
                     do {
                         let geoData = try JSONDecoder().decode(GeoData.self, from: JSONSerialization.data(withJSONObject: firstJson))
                         DispatchQueue.main.async {
                             //print("geodata: \(geoData)")
-                          self.theModel.setCoordinates(latitude: geoData.lat, longitude: geoData.lon)
+                            self.theModel.setCoordinates(latitude: geoData.lat, longitude: geoData.lon)
                             self.theModel.setLocation(location: geoData.place)
-                            self.theModel.getData()
-                            self.theModel.updateWeatherData()
-                            self.setupWeatherData()
-
+                            self.getData()
+                            print("finito")
                         }
                         
                     } catch {

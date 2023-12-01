@@ -26,10 +26,10 @@ struct listView: View {
                 .font(.title)
             Text("Approved time 2022-07-14")
             List {
-                ForEach(VM.weatherData.hourly.time.indices, id: \.self) { index in
-                    rowView(timestamp: VM.weatherData.hourly.time[index],
-                            icon: VM.getIconWithWeatherCode(code: VM.weatherData.hourly.weatherCode[index]),
-                            temp: VM.weatherData.hourly.temperature2M[index])
+                ForEach(VM.weatherData[0].hourly.time.indices, id: \.self) { index in
+                    rowView(timestamp: VM.weatherData[0].hourly.time[index],
+                            icon: VM.getIconWithWeatherCode(code: VM.weatherData[0].hourly.weatherCode[index]),
+                            temp: VM.weatherData[0].hourly.temperature2M[index])
                 }
             }
             .listStyle(PlainListStyle())
