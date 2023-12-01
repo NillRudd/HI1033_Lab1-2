@@ -79,6 +79,7 @@ struct PersistenceController {
                 
                 let decoder = JSONDecoder()
                 if let hourly = try? decoder.decode(Hourly.self, from: hourlyData) {
+                    
                     // Create WeatherData object
                     let weatherData = WeatherData(
                         latitude: item.latitude,

@@ -14,7 +14,7 @@ class WeatherVM : ObservableObject {
     @Published private var theModel: WeatherModel
     @Published var locationInput: String = "Stockholm"
 
-    var weatherData: [WeatherData]{
+    var weatherData: WeatherData{
         theModel.weatherData
     }
     var location: String{
@@ -48,7 +48,7 @@ class WeatherVM : ObservableObject {
                 print("No connection.")
             }
             DispatchQueue.main.async {
-                self.theModel.updateWeatherData()
+                //self.theModel.updateWeatherDataFromDB()
             }
             
             print(path.isExpensive)
@@ -70,11 +70,12 @@ class WeatherVM : ObservableObject {
                 print("error: \(error.localizedDescription)")
             } else if let data = data {
                 if String(data: data, encoding: .utf8) != nil {
-                    if let jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
+                    if let parsedData = try? JSONDecoder().decode(WeatherData.self, from: data) {
                         DispatchQueue.main.async {
-                            print("HOLA \(jsonData)")
-                            self.theModel.persistenceController.saveWeatherData(weatherData: jsonData)
-                            self.theModel.updateWeatherData()
+                            print("HOLA \(parsedData)")
+                            self.theModel.updateWeatherDataFromAPI(parsedData)
+
+                            self.theModel.persistenceController.saveWeatherData(weatherData: parsedData)
 
                         }
                     } else {
