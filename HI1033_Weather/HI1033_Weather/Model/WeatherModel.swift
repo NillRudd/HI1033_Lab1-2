@@ -11,9 +11,9 @@ import Foundation
 
 struct WeatherModel {
 
-    private (set) var latitude = 59.3293
-    private (set) var longitude = 18.0686
-    private var weatherData : [WeatherData] = []
+    private (set) var latitude : Double
+    private (set) var longitude : Double
+    private (set) var weatherData : [WeatherData] = []
     private (set) var location = "Stockholm"
     var geoData : [GeoData] = []
     private (set) var persistenceController : PersistenceController
@@ -22,6 +22,7 @@ struct WeatherModel {
         self.latitude = latitude
         self.longitude = longitude
         persistenceController = PersistenceController()
+        /*
         let newWeatherData = WeatherData(
             latitude: latitude,
             longitude: longitude,
@@ -36,6 +37,7 @@ struct WeatherModel {
             daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
         )
         weatherData.append(newWeatherData)
+        */
     }
     
     func getWeatherData() -> WeatherData{
@@ -76,6 +78,7 @@ struct WeatherModel {
         task.resume()
         
         session.finishTasksAndInvalidate()
+        print("finished get data")
     }
     
     func iconFromCode(code: Int) -> String {
@@ -116,5 +119,4 @@ struct WeatherModel {
     mutating func updateWeatherData(){
         self.weatherData = persistenceController.fetchWeatherData()!
     }
-    
 }

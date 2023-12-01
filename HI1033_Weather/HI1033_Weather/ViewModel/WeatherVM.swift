@@ -13,7 +13,7 @@ class WeatherVM : ObservableObject {
     
     @Published private var theModel: WeatherModel
     @Published var locationInput: String = "Stockholm"
-    @Published var weatherData: WeatherData
+    
 
     var location: String{
         theModel.location
@@ -25,10 +25,9 @@ class WeatherVM : ObservableObject {
     var longitude: Double {
         theModel.longitude
     }
-
-    init() {
-        theModel = WeatherModel()
-        weatherData = WeatherData(
+    
+    var weatherData : WeatherData {
+        theModel.weatherData.last ?? WeatherData(
             latitude: 0,
             longitude: 0,
             generationtimeMS: 0.0,
@@ -41,15 +40,21 @@ class WeatherVM : ObservableObject {
             dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
             daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
         )
-            setupWeatherData()
-        theModel.persistenceController.saveWeatherData(weatherData: weatherData)
+    }
+
+    init() {
+        theModel = WeatherModel()
+        //setupWeatherData()
         testNetwork()
     }
 
     private func setupWeatherData() {
         DispatchQueue.main.async {
-            self.weatherData = self.theModel.getWeatherData()
+            self.theModel.updateWeatherData()
+            //self.weatherData = self.theModel.getWeatherData()
+            self.objectWillChange.send()
         }
+        
     }
 
     func getIconWithWeatherCode(code: Int) -> String {
@@ -69,7 +74,7 @@ class WeatherVM : ObservableObject {
 
                 self.theModel.updateWeatherData()
                 self.setupWeatherData()
-
+                self.objectWillChange.send()
                 print(path.isExpensive)
             }
         }
@@ -108,12 +113,11 @@ class WeatherVM : ObservableObject {
                         let geoData = try JSONDecoder().decode(GeoData.self, from: JSONSerialization.data(withJSONObject: firstJson))
                         DispatchQueue.main.async {
                             //print("geodata: \(geoData)")
-                          self.theModel.setCoordinates(latitude: geoData.lat, longitude: geoData.lon)
+                            self.theModel.setCoordinates(latitude: geoData.lat, longitude: geoData.lon)
                             self.theModel.setLocation(location: geoData.place)
                             self.theModel.getData()
                             self.theModel.updateWeatherData()
-                            self.setupWeatherData()
-
+                            self.objectWillChange.send()
                         }
                         
                     } catch {
