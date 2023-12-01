@@ -14,6 +14,7 @@ class WeatherVM : ObservableObject {
     @Published private var theModel: WeatherModel
     @Published var locationInput: String = "Stockholm"
     @Published var weatherData : WeatherData
+    @Published var places : [String] = []
     private var persistenceController : PersistenceController
 
     var location: String{
@@ -43,7 +44,8 @@ class WeatherVM : ObservableObject {
             dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
             daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
         )
-        getDataFromWeb()
+        places = persistenceController.fetchAllFavorites()
+        //getDataFromWeb()
         testNetwork()
     }
 
@@ -57,17 +59,15 @@ class WeatherVM : ObservableObject {
             DispatchQueue.main.async {
                 if path.status == .satisfied {
                     print("We're connected!")
-                    //self.theModel.getData() {
-                        //self.theModel.updateWeatherData()
-                    //}
+                    //TODO: här borde man kolla om det gått 30 min sen senaste uppdateringen.
+                    self.getDataFromWeb()
                 } else {
                     print("No connection.")
+                    self.getDataFromPersistence()
                 }
-                self.getDataFromPersistence()
                 print(path.isExpensive)
             }
         }
-
         let queue = DispatchQueue(label: "Monitor")
         monitor.start(queue: queue)
     }
@@ -120,9 +120,7 @@ class WeatherVM : ObservableObject {
                 print("Failed to parse JSON: \(error)")
             }
         }
-
         task.resume()
-        
     }
     
     func getDataFromWeb() {
@@ -193,9 +191,15 @@ class WeatherVM : ObservableObject {
         } else {
             print("Failed to parse the date string to a WeekDay: \(timestamp)")
         }
+        return ""
+    }
     
-            return ""
-        
+    func addToFavorites(place: String) {
+        if !place.isEmpty {
+            if persistenceController.insertFavoritePlace(name: place) == true {
+                places.append(place)
+            }
+        }
     }
 }
 

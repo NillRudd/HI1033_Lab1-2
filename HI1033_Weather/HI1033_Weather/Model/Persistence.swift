@@ -128,4 +128,42 @@ struct PersistenceController {
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
+    
+    func fetchAllFavorites() -> [String] {
+        let request: NSFetchRequest<Favorite> = Favorite.fetchRequest()
+
+        do {
+            let favorite = try container.viewContext.fetch(request)
+            return favorite.map { $0.place ?? ""}
+        } catch {
+            print("Error fetching favorites: \(error)")
+            return []
+        }
+    }
+    
+    func insertFavoritePlace(name: String) -> Bool{
+        let request: NSFetchRequest<Favorite> = Favorite.fetchRequest()
+        request.predicate = NSPredicate(format: "place == %@", name)
+
+        do {
+            let existingFavorites = try container.viewContext.fetch(request)
+
+            guard existingFavorites.isEmpty else {
+                return false
+            }
+
+            let favorite = Favorite(context: container.viewContext)
+            favorite.place = name
+
+            do {
+                try container.viewContext.save()
+                print("Place '\(name)' added to favorites.")
+            } catch {
+                print("Error saving context: \(error)")
+            }
+        } catch {
+            print("Error fetching favorites: \(error)")
+        }
+        return true
+    }
 }
