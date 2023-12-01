@@ -13,7 +13,8 @@ class WeatherVM : ObservableObject {
     
     @Published private var theModel: WeatherModel
     @Published var locationInput: String = "Stockholm"
-    
+    @Published var weatherData : WeatherData
+    private var persistenceController : PersistenceController
 
     var location: String{
         theModel.location
@@ -26,8 +27,10 @@ class WeatherVM : ObservableObject {
         theModel.longitude
     }
     
-    var weatherData : WeatherData {
-        theModel.weatherData.last ?? WeatherData(
+    init() {
+        theModel = WeatherModel()
+        persistenceController = PersistenceController()
+        weatherData = WeatherData(
             latitude: 0,
             longitude: 0,
             generationtimeMS: 0.0,
@@ -40,21 +43,8 @@ class WeatherVM : ObservableObject {
             dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
             daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
         )
-    }
-
-    init() {
-        theModel = WeatherModel()
-        //setupWeatherData()
+        getDataFromWeb()
         testNetwork()
-    }
-
-    private func setupWeatherData() {
-        DispatchQueue.main.async {
-            self.theModel.updateWeatherData()
-            //self.weatherData = self.theModel.getWeatherData()
-            self.objectWillChange.send()
-        }
-        
     }
 
     func getIconWithWeatherCode(code: Int) -> String {
@@ -67,14 +57,13 @@ class WeatherVM : ObservableObject {
             DispatchQueue.main.async {
                 if path.status == .satisfied {
                     print("We're connected!")
-                    self.theModel.getData()
+                    //self.theModel.getData() {
+                        //self.theModel.updateWeatherData()
+                    //}
                 } else {
                     print("No connection.")
                 }
-
-                self.theModel.updateWeatherData()
-                self.setupWeatherData()
-                self.objectWillChange.send()
+                self.getDataFromPersistence()
                 print(path.isExpensive)
             }
         }
@@ -115,8 +104,10 @@ class WeatherVM : ObservableObject {
                             //print("geodata: \(geoData)")
                             self.theModel.setCoordinates(latitude: geoData.lat, longitude: geoData.lon)
                             self.theModel.setLocation(location: geoData.place)
-                            self.theModel.getData()
-                            self.theModel.updateWeatherData()
+                            //self.theModel.getData() {
+                                //self.theModel.updateWeatherData()
+                            //}
+                            self.getDataFromWeb()
                             self.objectWillChange.send()
                         }
                         
@@ -132,6 +123,47 @@ class WeatherVM : ObservableObject {
 
         task.resume()
         
+    }
+    
+    func getDataFromWeb() {
+        let endpoint = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=GMT")!
+        let sessionConfig = URLSessionConfiguration.default
+        let session = URLSession(configuration: sessionConfig)
+        
+        let task = session.dataTask(with: endpoint) { (data, response, error) in
+            if let error = error {
+                print("error: \(error.localizedDescription)")
+            } else if let data = data {
+                if let jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
+                    self.persistenceController.saveWeatherData(weatherData: jsonData)
+                    DispatchQueue.main.async {
+                        self.weatherData = jsonData
+                    }
+                } else {
+                    print("Failed to decode JSON into WeatherData")
+                }
+            }
+        }
+        task.resume()
+        
+        session.finishTasksAndInvalidate()
+        print("finished get data")
+    }
+    
+    func getDataFromPersistence() {
+        self.weatherData = persistenceController.fetchWeatherData()?.last ?? WeatherData(
+            latitude: 0,
+            longitude: 0,
+            generationtimeMS: 0.0,
+            utcOffsetSeconds: 0,
+            timezone: "UTC",
+            timezoneAbbreviation: "UTC",
+            elevation: 0,
+            hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
+            hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]),
+            dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
+            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
+        )
     }
 }
 
