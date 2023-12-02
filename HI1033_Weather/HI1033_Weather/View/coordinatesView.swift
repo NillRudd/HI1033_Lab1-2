@@ -18,8 +18,8 @@ struct coordinatesView: View {
                 //.keyboardType(.decimalPad)
                 //.keyboardType(.decimalPad)
             Button {
-                theViewModel.fetchGeoData()
-                
+                theViewModel.testNetwork()
+                print("Submit")
                 //theViewModel.saveToCoreData()
                 //isSettingsViewActive = false
             }label: {

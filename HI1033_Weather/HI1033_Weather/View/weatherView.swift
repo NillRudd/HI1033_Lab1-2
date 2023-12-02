@@ -24,11 +24,14 @@ struct weatherView: View {
             }
             Text("\(VM.location)")
                 .font(.title)
-            Text("Approved time 2022-07-14")
-            todayView().padding(.vertical)
+            
+            
+                if(!VM.isConnected){
+                    Text("No Internet Connection").foregroundColor(.red)
+                }
+                Text("Last updated \(VM.formatDateLastUpdated(timestamp: VM.lastUpdated))")
             
             listView()
-            
             coordinatesView()
         }
     }

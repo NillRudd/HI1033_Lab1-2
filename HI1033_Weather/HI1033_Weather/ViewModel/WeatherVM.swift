@@ -14,8 +14,12 @@ class WeatherVM : ObservableObject {
     @Published private var theModel: WeatherModel
     @Published var locationInput: String = "Stockholm"
     @Published var weatherData : WeatherData
+    @Published var isConnected : Bool = true
     private var persistenceController : PersistenceController
 
+    var lastUpdated: Date{
+        theModel.lastUpdated
+    }
     var location: String{
         theModel.location
     }
@@ -43,7 +47,6 @@ class WeatherVM : ObservableObject {
             dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
             daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
         )
-        getDataFromWeb()
         testNetwork()
     }
 
@@ -51,19 +54,23 @@ class WeatherVM : ObservableObject {
         return theModel.iconFromCode(code: code)
     }
     
-    func testNetwork() {
+    func testNetwork(){
         let monitor = NWPathMonitor()
         monitor.pathUpdateHandler = { path in
             DispatchQueue.main.async {
                 if path.status == .satisfied {
                     print("We're connected!")
-                    //self.theModel.getData() {
+                    self.fetchGeoData()
+                    self.getDataFromWeb()
+                    self.theModel.setLastUpdated()
+                    self.isConnected = true
                         //self.theModel.updateWeatherData()
                     //}
                 } else {
+                    self.getDataFromPersistence()
+                    self.isConnected = false
                     print("No connection.")
                 }
-                self.getDataFromPersistence()
                 print(path.isExpensive)
             }
         }
@@ -107,7 +114,6 @@ class WeatherVM : ObservableObject {
                             //self.theModel.getData() {
                                 //self.theModel.updateWeatherData()
                             //}
-                            self.getDataFromWeb()
                             self.objectWillChange.send()
                         }
                         
@@ -160,9 +166,9 @@ class WeatherVM : ObservableObject {
             timezoneAbbreviation: "UTC",
             elevation: 0,
             hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
-            hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]),
+            hourly: Hourly(time: ["2023-12-01T00:00"], temperature2M: [0.0], weatherCode: [0]),
             dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
-            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
+            daily: Daily(time: ["2023-12-01"], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
         )
     }
 
@@ -174,7 +180,7 @@ class WeatherVM : ObservableObject {
             let calendar = Calendar.current
             hour = String(calendar.component(.hour, from: date))
         } else {
-            print("Failed to parse the date string: \(timestamp)")
+            //print("Failed to parse the date string: \(timestamp)")
         }
         return hour
     }
@@ -183,20 +189,29 @@ class WeatherVM : ObservableObject {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         if let date = dateFormatter.date(from: timestamp){
-            if Calendar.current.isDateInToday(date) {
-                return "Today"
-            } else{
-                dateFormatter.dateFormat = "EEEE"
-                return dateFormatter.string(from: date)
-            }
-
+            dateFormatter.dateFormat = "EEEE"
+            return dateFormatter.string(from: date)
         } else {
-            print("Failed to parse the date string to a WeekDay: \(timestamp)")
+            //print("Failed to parse the date string to a WeekDay: \(timestamp)")
         }
     
             return ""
         
     }
+    
+    func formatDateLastUpdated(timestamp: Date) -> String{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter.string(from: timestamp)
+            
+    }
+    
+    
+    
 }
-
+extension String {
+    func localized() -> String {
+        NSLocalizedString(self, comment: "")
+    }
+}
 

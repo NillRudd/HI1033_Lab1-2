@@ -12,7 +12,7 @@ struct todayView: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false){
-        HStack{
+        HStack{ 
                 ForEach(VM.weatherData.hourly.time.prefix(24), id: \.self) { timestamp in
                     if let index = VM.weatherData.hourly.time.firstIndex(of: timestamp) {
                         hourlyDetailView(
