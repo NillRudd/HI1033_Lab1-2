@@ -35,6 +35,7 @@ struct PersistenceController {
         item.timezone = weatherData.timezone
         item.timezoneAbbreviation = weatherData.timezoneAbbreviation
         item.elevation = Double(weatherData.elevation)
+        item.timeStamp = Date.now
 
         // Serialize the hourly weather data and store it in the attribute
         let encoder = JSONEncoder()
@@ -87,7 +88,8 @@ struct PersistenceController {
                         hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
                         hourly: hourly,
                         dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
-                        daily: daily
+                        daily: daily,
+                        timestamp: item.timeStamp ?? Date.now
                     )
                     return weatherData
                 } else {
@@ -127,5 +129,61 @@ struct PersistenceController {
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
+    }
+    
+    func fetchAllFavorites() -> [String] {
+        let request: NSFetchRequest<Favorite> = Favorite.fetchRequest()
+
+        do {
+            let favorite = try container.viewContext.fetch(request)
+            return favorite.map { $0.place ?? ""}
+        } catch {
+            print("Error fetching favorites: \(error)")
+            return []
+        }
+    }
+    
+    func insertFavoritePlace(name: String) -> Bool{
+        let request: NSFetchRequest<Favorite> = Favorite.fetchRequest()
+        request.predicate = NSPredicate(format: "place == %@", name)
+
+        do {
+            let existingFavorites = try container.viewContext.fetch(request)
+
+            guard existingFavorites.isEmpty else {
+                return false
+            }
+
+            let favorite = Favorite(context: container.viewContext)
+            favorite.place = name
+
+            do {
+                try container.viewContext.save()
+                print("Place '\(name)' added to favorites.")
+            } catch {
+                print("Error saving context: \(error)")
+            }
+        } catch {
+            print("Error fetching favorites: \(error)")
+        }
+        return true
+    }
+    
+    func removeFromFavorites(place: String) {
+        let viewContext = container.viewContext
+
+        let fetchRequest: NSFetchRequest<Favorite> = Favorite.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "place == %@", place)
+
+        do {
+            let favorites = try viewContext.fetch(fetchRequest)
+            for favorite in favorites {
+                viewContext.delete(favorite)
+            }
+
+            try viewContext.save()
+        } catch {
+            print("Error removing from favorites: \(error)")
+        }
     }
 }

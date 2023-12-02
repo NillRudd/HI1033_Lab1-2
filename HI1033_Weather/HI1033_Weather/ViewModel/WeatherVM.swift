@@ -14,7 +14,9 @@ class WeatherVM : ObservableObject {
     @Published private var theModel: WeatherModel
     @Published var locationInput: String = "Stockholm"
     @Published var weatherData : WeatherData
+
     @Published var isConnected : Bool = true
+    @Published var places : [String] = []
     private var persistenceController : PersistenceController
 
     var lastUpdated: Date{
@@ -45,8 +47,12 @@ class WeatherVM : ObservableObject {
             hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
             hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]),
             dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
-            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
+            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0]),
+            timestamp: Date.now
         )
+
+        places = persistenceController.fetchAllFavorites()
+        //getDataFromWeb()
         testNetwork()
     }
 
@@ -60,21 +66,23 @@ class WeatherVM : ObservableObject {
             DispatchQueue.main.async {
                 if path.status == .satisfied {
                     print("We're connected!")
+
                     self.fetchGeoData()
                     self.getDataFromWeb()
                     self.theModel.setLastUpdated()
                     self.isConnected = true
                         //self.theModel.updateWeatherData()
                     //}
+
                 } else {
                     self.getDataFromPersistence()
                     self.isConnected = false
                     print("No connection.")
+                    self.getDataFromPersistence()
                 }
                 print(path.isExpensive)
             }
         }
-
         let queue = DispatchQueue(label: "Monitor")
         monitor.start(queue: queue)
     }
@@ -103,17 +111,18 @@ class WeatherVM : ObservableObject {
                     print("Failed to parse JSON as array of dictionaries")
                     return
                 }
-                print(jsonArray )
+                //print(jsonArray )
                 if let firstJson = jsonArray.first {
                     do {
                         let geoData = try JSONDecoder().decode(GeoData.self, from: JSONSerialization.data(withJSONObject: firstJson))
                         DispatchQueue.main.async {
-                            //print("geodata: \(geoData)")
+    
                             self.theModel.setCoordinates(latitude: geoData.lat, longitude: geoData.lon)
                             self.theModel.setLocation(location: geoData.place)
                             //self.theModel.getData() {
                                 //self.theModel.updateWeatherData()
                             //}
+
                             self.objectWillChange.send()
                         }
                         
@@ -126,9 +135,7 @@ class WeatherVM : ObservableObject {
                 print("Failed to parse JSON: \(error)")
             }
         }
-
         task.resume()
-        
     }
     
     func getDataFromWeb() {
@@ -140,9 +147,10 @@ class WeatherVM : ObservableObject {
             if let error = error {
                 print("error: \(error.localizedDescription)")
             } else if let data = data {
-                if let jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
+                if var jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
                     self.persistenceController.saveWeatherData(weatherData: jsonData)
                     DispatchQueue.main.async {
+                        jsonData.timestamp = Date.now
                         self.weatherData = jsonData
                     }
                 } else {
@@ -168,7 +176,8 @@ class WeatherVM : ObservableObject {
             hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
             hourly: Hourly(time: ["2023-12-01T00:00"], temperature2M: [0.0], weatherCode: [0]),
             dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
-            daily: Daily(time: ["2023-12-01"], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
+            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0]),
+            timestamp: Date.now
         )
     }
 
@@ -194,9 +203,24 @@ class WeatherVM : ObservableObject {
         } else {
             //print("Failed to parse the date string to a WeekDay: \(timestamp)")
         }
+        return ""
+    }
     
-            return ""
-        
+    func addToFavorites(place: String) {
+        if !place.isEmpty {
+            if persistenceController.insertFavoritePlace(name: place) == true {
+                places.append(place)
+            }
+        }
+    }
+    
+    func removeFromFavorites(place: String) {
+        persistenceController.removeFromFavorites(place: place)
+        for index in 0...places.count-1 {
+            if places[index] == place {
+                places.remove(at: index)
+            }
+        }
     }
     
     func formatDateLastUpdated(timestamp: Date) -> String{

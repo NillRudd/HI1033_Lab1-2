@@ -9,22 +9,31 @@ import SwiftUI
 
 struct weatherView: View {
     @EnvironmentObject var VM: WeatherVM
+    @State var isFavoritesViewActive = false
     var body: some View {
         VStack{
             Spacer()
             HStack{
-                    Text("Weather Forecast")
-                    .font(.title3)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(.blue)
-
-
+                Text("Weather Forecast")
+                .font(.title3)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .foregroundColor(.white)
+                    .background(.blue)
+                Button(action: {
+                    isFavoritesViewActive = true
+                }) {
+                    Text("Favorites")
+                }.fullScreenCover(isPresented:  $isFavoritesViewActive) {
+                    FavoritesView(isFavoritesViewActive: $isFavoritesViewActive)
+                        .environmentObject(VM)
+                }
             }
             Text("\(VM.location)")
                 .font(.title)
-            
+
+            Text("Approved time \(VM.weatherData.timestamp?.formatted() ?? "N/A")")
+            todayView().padding(.vertical)
             
                 if(!VM.isConnected){
                     Text("No Internet Connection").foregroundColor(.red)

@@ -23,6 +23,7 @@
 		85060C552B14BDB300B544AB /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85060C542B14BDB300B544AB /* Persistence.swift */; };
 		85060C582B14BDB300B544AB /* HI1033_Weather.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 85060C562B14BDB300B544AB /* HI1033_Weather.xcdatamodeld */; };
 		85060C5F2B15FDB100B544AB /* WeatherDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85060C5E2B15FDB100B544AB /* WeatherDataModel.swift */; };
+		85060C6B2B1A778500B544AB /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85060C6A2B1A778500B544AB /* FavoritesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		85060C542B14BDB300B544AB /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		85060C572B14BDB300B544AB /* HI1033_Weather.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HI1033_Weather.xcdatamodel; sourceTree = "<group>"; };
 		85060C5E2B15FDB100B544AB /* WeatherDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDataModel.swift; sourceTree = "<group>"; };
+		85060C6A2B1A778500B544AB /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 				5B00704E2B19E2C90095B9B3 /* hourlyDetailView.swift */,
 				5B0070502B19EAE20095B9B3 /* todayView.swift */,
 				5B0070522B19EB510095B9B3 /* listView.swift */,
+				85060C6A2B1A778500B544AB /* FavoritesView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 				5B0070532B19EB510095B9B3 /* listView.swift in Sources */,
 				85060C552B14BDB300B544AB /* Persistence.swift in Sources */,
 				5B00704F2B19E2C90095B9B3 /* hourlyDetailView.swift in Sources */,
+				85060C6B2B1A778500B544AB /* FavoritesView.swift in Sources */,
 				5BB2D3B92B14C8C80071C480 /* coordinatesView.swift in Sources */,
 				5B00DEDA2B1772130034ED05 /* GeoDataModel.swift in Sources */,
 				85060C582B14BDB300B544AB /* HI1033_Weather.xcdatamodeld in Sources */,
