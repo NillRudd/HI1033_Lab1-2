@@ -31,11 +31,16 @@ struct weatherView: View {
             }
             Text("\(VM.location)")
                 .font(.title)
+
             Text("Approved time \(VM.weatherData.timestamp?.formatted() ?? "N/A")")
             todayView().padding(.vertical)
             
-            listView()
+                if(!VM.isConnected){
+                    Text("No Internet Connection").foregroundColor(.red)
+                }
+                Text("Last updated \(VM.formatDateLastUpdated(timestamp: VM.lastUpdated))")
             
+            listView()
             coordinatesView()
         }
     }

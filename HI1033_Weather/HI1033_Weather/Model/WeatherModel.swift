@@ -16,6 +16,7 @@ struct WeatherModel {
     private (set) var weatherData : [WeatherData] = []
     private (set) var location = "Stockholm"
     var geoData : [GeoData] = []
+    private (set) var lastUpdated: Date = Date.now
     private (set) var persistenceController : PersistenceController
     
     init(latitude: Double = 59.3293, longitude: Double = 18.0686) {
@@ -42,6 +43,10 @@ struct WeatherModel {
     
     func getWeatherData() -> WeatherData{
         return weatherData[weatherData.count-1]
+    }
+    
+    mutating func setLastUpdated(){
+        lastUpdated = Date.now
     }
     
 

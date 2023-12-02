@@ -12,18 +12,24 @@ struct listView: View {
 
     var body: some View {
         List {
-            ForEach(VM.weatherData.daily.time.prefix(24), id: \.self) { timestamp in
-                if let index = VM.weatherData.daily.time.firstIndex(of: timestamp) {
-                    rowView(
-                        timestamp: VM.weatherData.daily.time[index],
-                        icon: VM.getIconWithWeatherCode(code: VM.weatherData.daily.weatherCode[index]),
-                        tempMin: VM.weatherData.daily.temperature2MMin[index],
-                        tempMax: VM.weatherData.daily.temperature2MMax[index]
-                    ).padding(.vertical)
+            Section{
+                todayView()
+            }
+            Section{
+                ForEach(VM.weatherData.daily.time.prefix(24), id: \.self) { timestamp in
+                    if let index = VM.weatherData.daily.time.firstIndex(of: timestamp) {
+                        rowView(
+                            timestamp: VM.weatherData.daily.time[index],
+                            icon: VM.getIconWithWeatherCode(code: VM.weatherData.daily.weatherCode[index]),
+                            tempMin: VM.weatherData.daily.temperature2MMin[index],
+                            tempMax: VM.weatherData.daily.temperature2MMax[index]
+                        ).padding(.vertical)
+                    }
                 }
             }
         }
-        .listStyle(PlainListStyle())
+        
+        //.listStyle(PlainListStyle())
     }
 }
 
