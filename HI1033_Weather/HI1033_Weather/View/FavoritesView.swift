@@ -16,20 +16,30 @@ struct FavoritesView: View {
         NavigationView {
             List {
                 ForEach(VM.places, id: \.self) { place in
-                     // Replace EmptyView
-                    Text(place)
-                        .onTapGesture {
-                            VM.locationInput = place
-                            VM.fetchGeoData()
-                            VM.testNetwork()
-                            isFavoritesViewActive = false
-                        
+                    HStack {
+                        Text(place)
+                            .onTapGesture {
+                                VM.locationInput = place
+                                VM.fetchGeoData()
+                                VM.testNetwork()
+                                isFavoritesViewActive = false
+                            }
+                        Spacer()
+                        Button(action: {
+                            VM.removeFromFavorites(place: place)
+                        }) {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.yellow)
+                        }
                     }
                 }
-                TextField("Add new place", text: $newPlace, onCommit: {
-                    VM.addToFavorites(place: newPlace)
-                    newPlace = ""
-                })
+                HStack {
+                    TextField("Add new place", text: $newPlace)
+                    Button("Add") {
+                        VM.addToFavorites(place: newPlace)
+                        newPlace = ""
+                    }
+                }
             }
             .listStyle(PlainListStyle())
             .navigationTitle("Favorites")

@@ -20,7 +20,8 @@ struct WeatherData: Codable {
     let hourly: Hourly
     let dailyUnits: DailyUnits
     let daily: Daily
-
+    var timestamp: Date?
+    
     enum CodingKeys: String, CodingKey {
         case latitude, longitude
         case generationtimeMS = "generationtime_ms"
@@ -32,8 +33,9 @@ struct WeatherData: Codable {
         case hourly
         case dailyUnits = "daily_units"
         case daily
+        case timestamp
     }
-    init(latitude: Double, longitude: Double, generationtimeMS: Double, utcOffsetSeconds: Int, timezone: String, timezoneAbbreviation: String, elevation: Int, hourlyUnits: HourlyUnits, hourly: Hourly, dailyUnits: DailyUnits, daily: Daily) {
+    init(latitude: Double, longitude: Double, generationtimeMS: Double, utcOffsetSeconds: Int, timezone: String, timezoneAbbreviation: String, elevation: Int, hourlyUnits: HourlyUnits, hourly: Hourly, dailyUnits: DailyUnits, daily: Daily, timestamp: Date) {
         self.latitude = latitude
         self.longitude = longitude
         self.generationtimeMS = generationtimeMS
@@ -45,6 +47,7 @@ struct WeatherData: Codable {
         self.hourly = hourly
         self.dailyUnits = dailyUnits
         self.daily = daily
+        self.timestamp = timestamp
     }
 }
 

@@ -31,7 +31,7 @@ struct weatherView: View {
             }
             Text("\(VM.location)")
                 .font(.title)
-            Text("Approved time 2022-07-14")
+            Text("Approved time \(VM.weatherData.timestamp?.formatted() ?? "N/A")")
             todayView().padding(.vertical)
             
             listView()

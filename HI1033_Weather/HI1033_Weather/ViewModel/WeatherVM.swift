@@ -42,7 +42,8 @@ class WeatherVM : ObservableObject {
             hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
             hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]),
             dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
-            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
+            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0]),
+            timestamp: Date.now
         )
         places = persistenceController.fetchAllFavorites()
         //getDataFromWeb()
@@ -59,8 +60,8 @@ class WeatherVM : ObservableObject {
             DispatchQueue.main.async {
                 if path.status == .satisfied {
                     print("We're connected!")
-                    //TODO: här borde man kolla om det gått 30 min sen senaste uppdateringen.
                     self.getDataFromWeb()
+                    
                 } else {
                     print("No connection.")
                     self.getDataFromPersistence()
@@ -96,17 +97,15 @@ class WeatherVM : ObservableObject {
                     print("Failed to parse JSON as array of dictionaries")
                     return
                 }
-                print(jsonArray )
+                //print(jsonArray )
                 if let firstJson = jsonArray.first {
                     do {
                         let geoData = try JSONDecoder().decode(GeoData.self, from: JSONSerialization.data(withJSONObject: firstJson))
                         DispatchQueue.main.async {
-                            //print("geodata: \(geoData)")
+    
                             self.theModel.setCoordinates(latitude: geoData.lat, longitude: geoData.lon)
                             self.theModel.setLocation(location: geoData.place)
-                            //self.theModel.getData() {
-                                //self.theModel.updateWeatherData()
-                            //}
+                            
                             self.getDataFromWeb()
                             self.objectWillChange.send()
                         }
@@ -132,9 +131,10 @@ class WeatherVM : ObservableObject {
             if let error = error {
                 print("error: \(error.localizedDescription)")
             } else if let data = data {
-                if let jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
+                if var jsonData = try? JSONDecoder().decode(WeatherData.self, from: data) {
                     self.persistenceController.saveWeatherData(weatherData: jsonData)
                     DispatchQueue.main.async {
+                        jsonData.timestamp = Date.now
                         self.weatherData = jsonData
                     }
                 } else {
@@ -160,7 +160,8 @@ class WeatherVM : ObservableObject {
             hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
             hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]),
             dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
-            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
+            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0]),
+            timestamp: Date.now
         )
     }
 
@@ -198,6 +199,15 @@ class WeatherVM : ObservableObject {
         if !place.isEmpty {
             if persistenceController.insertFavoritePlace(name: place) == true {
                 places.append(place)
+            }
+        }
+    }
+    
+    func removeFromFavorites(place: String) {
+        persistenceController.removeFromFavorites(place: place)
+        for index in 0...places.count-1 {
+            if places[index] == place {
+                places.remove(at: index)
             }
         }
     }
