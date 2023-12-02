@@ -20,7 +20,6 @@ struct FavoritesView: View {
                         Text(place)
                             .onTapGesture {
                                 VM.locationInput = place
-                                VM.fetchGeoData()
                                 VM.testNetwork()
                                 isFavoritesViewActive = false
                             }

@@ -19,26 +19,35 @@ struct weatherView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                     .foregroundColor(.white)
-                    .background(.blue)
-                Button(action: {
-                    isFavoritesViewActive = true
-                }) {
-                    Text("Favorites")
-                }.fullScreenCover(isPresented:  $isFavoritesViewActive) {
-                    FavoritesView(isFavoritesViewActive: $isFavoritesViewActive)
-                        .environmentObject(VM)
+            }
+            .background(.blue)
+
+            ZStack {Button(action: {
+                isFavoritesViewActive = true
+            }) {
+                Image(systemName:"gearshape.fill")
+            }.fullScreenCover(isPresented:  $isFavoritesViewActive) {
+                FavoritesView(isFavoritesViewActive: $isFavoritesViewActive)
+                    .environmentObject(VM)
+            }.frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.horizontal)
+                    .font(.title2)
+                VStack {
+                    HStack {
+                        Text("\(VM.location)")
+                            .font(.title)
+                            .frame(alignment: .center)
+                        
+                        
+                    }
+                    if(!VM.isConnected){
+                        Text("No Internet Connection").foregroundColor(.red)
+                    }
+                    Text("Last updated \(VM.formatDateLastUpdated(timestamp: VM.lastUpdated))")
                 }
             }
-            Text("\(VM.location)")
-                .font(.title)
 
-            Text("Approved time \(VM.weatherData.timestamp?.formatted() ?? "N/A")")
-            todayView().padding(.vertical)
-            
-                if(!VM.isConnected){
-                    Text("No Internet Connection").foregroundColor(.red)
-                }
-                Text("Last updated \(VM.formatDateLastUpdated(timestamp: VM.lastUpdated))")
+
             
             listView()
             coordinatesView()

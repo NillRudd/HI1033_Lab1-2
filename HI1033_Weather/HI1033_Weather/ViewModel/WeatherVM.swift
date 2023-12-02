@@ -51,9 +51,9 @@ class WeatherVM : ObservableObject {
             timestamp: Date.now
         )
 
-        places = persistenceController.fetchAllFavorites()
+        //places = persistenceController.fetchAllFavorites()
         //getDataFromWeb()
-        testNetwork()
+        //testNetwork()
     }
 
     func getIconWithWeatherCode(code: Int) -> String {
