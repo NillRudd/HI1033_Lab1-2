@@ -26,7 +26,6 @@ struct PersistenceController {
         clearAllData()
         let viewContext = container.viewContext
 
-        // Replace "Item" with the actual name of your entity for the data
         let item = Item(context: viewContext)
         item.latitude = weatherData.latitude
         item.longitude = weatherData.longitude
@@ -37,18 +36,15 @@ struct PersistenceController {
         item.elevation = Double(weatherData.elevation)
         item.timeStamp = Date.now
 
-        // Serialize the hourly weather data and store it in the attribute
         let encoder = JSONEncoder()
         if let hourlyData = try? encoder.encode(weatherData.hourly) {
             item.hourlyWeatherData = hourlyData
         }
 
-        // Serialize the daily weather data and store it in the attribute
         if let dailyData = try? encoder.encode(weatherData.daily) {
             item.dailyWeatherData = dailyData
         }
 
-        // Save changes to Core Data
         do {
             try viewContext.save()
         } catch {
@@ -63,7 +59,6 @@ struct PersistenceController {
         do {
             let items = try viewContext.fetch(fetchRequest)
 
-            // Transform fetched items into WeatherData objects
             let weatherDataArray = items.compactMap { item -> WeatherData? in
                 guard
                     let hourlyData = item.hourlyWeatherData,
@@ -76,7 +71,6 @@ struct PersistenceController {
                 if let hourly = try? decoder.decode(Hourly.self, from: hourlyData),
                    let daily = try? decoder.decode(Daily.self, from: dailyData)
                 {
-                    // Create WeatherData object
                     let weatherData = WeatherData(
                         latitude: item.latitude,
                         longitude: item.longitude,

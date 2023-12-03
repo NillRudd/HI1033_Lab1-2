@@ -46,14 +46,10 @@ struct weatherView: View {
                     Text("Last updated \(VM.formatDateLastUpdated(timestamp: VM.lastUpdated))")
                 }
             }
-
-
-            
             listView()
             coordinatesView()
         }
     }
-    
 }
 
 struct listView_Previews: PreviewProvider {

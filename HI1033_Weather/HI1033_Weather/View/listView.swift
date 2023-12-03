@@ -28,8 +28,6 @@ struct listView: View {
                 }
             }
         }
-        
-        //.listStyle(PlainListStyle())
     }
 }
 

@@ -30,15 +30,6 @@ struct rowView: View {
             Text("\(formattedTempMax)°").font(.title2)
         }
     }
-    
-    /*
-     private var formattedDate: String{
-     let dateFormatter = DateFormatter()
-     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-     return dateFormatter.string(from: timestamp)
-     }
-     */
-    
 }
 
 struct rowView_Previews: PreviewProvider {

@@ -10,7 +10,6 @@
 
 import Foundation
 
-// MARK: - Welcome
 struct WeatherData: Codable {
     let latitude, longitude, generationtimeMS: Double
     let utcOffsetSeconds: Int
@@ -65,7 +64,6 @@ struct WeatherData: Codable {
     }
 }
 
-// MARK: - Daily
 struct Daily: Codable {
     let time: [String]
     let weatherCode: [Int]
@@ -79,7 +77,6 @@ struct Daily: Codable {
     }
 }
 
-// MARK: - DailyUnits
 struct DailyUnits: Codable {
     let time, weatherCode, temperature2MMax, temperature2MMin: String
 
@@ -91,7 +88,6 @@ struct DailyUnits: Codable {
     }
 }
 
-// MARK: - Hourly
 struct Hourly: Codable {
     let time: [String]
     let temperature2M: [Double]
@@ -104,7 +100,6 @@ struct Hourly: Codable {
     }
 }
 
-// MARK: - HourlyUnits
 struct HourlyUnits: Codable {
     let time, temperature2M, weatherCode: String
 

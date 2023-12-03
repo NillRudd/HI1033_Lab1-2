@@ -39,10 +39,7 @@ class WeatherVM : ObservableObject {
         theModel = WeatherModel()
         persistenceController = PersistenceController()
         weatherData = WeatherData()
-
-        //places = persistenceController.fetchAllFavorites()
-        //getDataFromWeb()
-        //testNetwork()
+        testNetwork()
     }
 
     func getIconWithWeatherCode(code: Int) -> String {
