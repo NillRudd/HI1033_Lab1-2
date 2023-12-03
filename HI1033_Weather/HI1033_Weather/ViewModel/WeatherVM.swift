@@ -14,10 +14,12 @@ class WeatherVM : ObservableObject {
     @Published private var theModel: WeatherModel
     @Published var locationInput: String = "Stockholm"
     @Published var weatherData : WeatherData
-
     @Published var isConnected : Bool = true
-    @Published var places : [String] = []
     private var persistenceController : PersistenceController
+    
+    var places : [String] {
+        theModel.places
+    }
 
     var lastUpdated: Date{
         theModel.lastUpdated
@@ -36,20 +38,7 @@ class WeatherVM : ObservableObject {
     init() {
         theModel = WeatherModel()
         persistenceController = PersistenceController()
-        weatherData = WeatherData(
-            latitude: 0,
-            longitude: 0,
-            generationtimeMS: 0.0,
-            utcOffsetSeconds: 0,
-            timezone: "UTC",
-            timezoneAbbreviation: "UTC",
-            elevation: 0,
-            hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
-            hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]),
-            dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
-            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0]),
-            timestamp: Date.now
-        )
+        weatherData = WeatherData()
 
         //places = persistenceController.fetchAllFavorites()
         //getDataFromWeb()
@@ -165,20 +154,7 @@ class WeatherVM : ObservableObject {
     }
     
     func getDataFromPersistence() {
-        self.weatherData = persistenceController.fetchWeatherData()?.last ?? WeatherData(
-            latitude: 0,
-            longitude: 0,
-            generationtimeMS: 0.0,
-            utcOffsetSeconds: 0,
-            timezone: "UTC",
-            timezoneAbbreviation: "UTC",
-            elevation: 0,
-            hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
-            hourly: Hourly(time: ["2023-12-01T00:00"], temperature2M: [0.0], weatherCode: [0]),
-            dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
-            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0]),
-            timestamp: Date.now
-        )
+        self.weatherData = persistenceController.fetchWeatherData()?.last ?? WeatherData()
     }
 
     func formatDatetoHour(timestamp: String) -> String{
@@ -207,32 +183,20 @@ class WeatherVM : ObservableObject {
     }
     
     func addToFavorites(place: String) {
-        if !place.isEmpty {
-            if persistenceController.insertFavoritePlace(name: place) == true {
-                places.append(place)
-            }
-        }
+        theModel.addPlace(place: place)
     }
     
     func removeFromFavorites(place: String) {
-        persistenceController.removeFromFavorites(place: place)
-        for index in 0...places.count-1 {
-            if places[index] == place {
-                places.remove(at: index)
-            }
-        }
+        theModel.removePlace(place: place)
     }
     
     func formatDateLastUpdated(timestamp: Date) -> String{
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return dateFormatter.string(from: timestamp)
-            
     }
-    
-    
-    
 }
+
 extension String {
     func localized() -> String {
         NSLocalizedString(self, comment: "")

@@ -13,47 +13,51 @@ struct WeatherModel {
 
     private (set) var latitude : Double
     private (set) var longitude : Double
-    private (set) var weatherData : [WeatherData] = []
+    //private (set) var weatherData : [WeatherData] = []
+    private (set) var places : [String] = []
     private (set) var location = "Stockholm"
     var geoData : [GeoData] = []
     private (set) var lastUpdated: Date = Date.now
-    private (set) var persistenceController : PersistenceController
+    private var persistanceController : PersistenceController
     
     init(latitude: Double = 59.3293, longitude: Double = 18.0686) {
         self.latitude = latitude
         self.longitude = longitude
-        persistenceController = PersistenceController()
-        /*
-        let newWeatherData = WeatherData(
-            latitude: latitude,
-            longitude: longitude,
-            generationtimeMS: 0.0,
-            utcOffsetSeconds: 0,
-            timezone: "UTC",
-            timezoneAbbreviation: "UTC",
-            elevation: 0,
-            hourlyUnits: HourlyUnits(time: "", temperature2M: "", weatherCode: ""),
-            hourly: Hourly(time: [""], temperature2M: [0.0], weatherCode: [0]),
-            dailyUnits: DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: ""),
-            daily: Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
-        )
-        weatherData.append(newWeatherData)
-        */
-    }
-    
-    func getWeatherData() -> WeatherData{
-        return weatherData[weatherData.count-1]
+        persistanceController = PersistenceController()
+        places = persistanceController.fetchAllFavorites()
     }
     
     mutating func setLastUpdated(){
         lastUpdated = Date.now
     }
-    
 
     mutating func setCoordinates(latitude: Double, longitude: Double){
         self.latitude = latitude
         self.longitude = longitude
     }
+    
+    mutating func addPlace(place : String) {
+        if !place.isEmpty {
+            if persistanceController.insertFavoritePlace(name: place) == true {
+                places.append(place)
+            }
+        }
+    }
+    
+    mutating func removePlace(place: String) {
+        persistanceController.removeFromFavorites(place: place)
+        if places.count == 1 {
+            places.removeFirst()
+            return
+        }
+        for index in 0...places.count-1 {
+            if places[index] == place {
+                places.remove(at: index)
+                return
+            }
+        }
+    }
+    
     
     mutating func setLocation(location: String){
         self.location = location
@@ -92,9 +96,5 @@ struct WeatherModel {
                         icon = "❓" // Unknown weather code
                     }
         return icon
-    }
-    
-    mutating func updateWeatherData(){
-        self.weatherData = persistenceController.fetchWeatherData()!
     }
 }

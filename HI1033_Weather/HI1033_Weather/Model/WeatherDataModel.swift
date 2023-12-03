@@ -49,6 +49,20 @@ struct WeatherData: Codable {
         self.daily = daily
         self.timestamp = timestamp
     }
+    init() {
+        self.latitude = 0.0
+        self.longitude = 0.0
+        self.generationtimeMS = 0.0
+        self.utcOffsetSeconds = 0
+        self.timezone = ""
+        self.timezoneAbbreviation = ""
+        self.elevation = 0
+        self.hourlyUnits = HourlyUnits(time: "", temperature2M: "", weatherCode: "")
+        self.hourly = Hourly(time: [""], temperature2M: [0.0], weatherCode: [0])
+        self.dailyUnits = DailyUnits(time: "", weatherCode: "", temperature2MMax: "", temperature2MMin: "")
+        self.daily = Daily(time: [""], weatherCode: [0], temperature2MMax: [0.0], temperature2MMin: [0.0])
+        self.timestamp = Date.now
+    }
 }
 
 // MARK: - Daily
